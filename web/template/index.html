@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Completo</title>
+  <script src="/static/js/showdown.js"></script>
+  <script src="/static/js/prism.js"></script>
+  <link rel="stylesheet" href="/static/css/prism.css">
+  <style>
+    :root {
+      font-family: 'Franklin Gothic Medium';
+      background-color: #1e1f1f;
+      color: #ffffff;
+      font-size: 17px;
+    }
+    pre {
+      border-radius: 5px;
+      box-shadow: 0px 1px 2px rgb(0, 0, 0);
+    }
+    #output {
+      width: 1000px;
+    }
+    #render {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="markdown">
+{{ .md }}
+  </div>
+  <div id="render">
+    <div id="output"></div>
+  </div>
+
+  <script src="static/js/render.js"></script>
+</body>
+
+</html>
