@@ -3,10 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/loadept/loadept.com/api"
+	"github.com/loadept/loadept.com/api/handler"
 )
 
 func main() {
 	mux := http.NewServeMux()
+
+	mux.Handle("/static/", api.ServeStatic("web/static"))
+
+	mux.HandleFunc("/", handler.Index)
 
 	mux.Handle("/home", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<h1>Hola mundo</h1>"))
@@ -17,9 +24,9 @@ func main() {
 		Handler: mux,
 	}
 
-	fmt.Println("Serve ready to listen")
+	fmt.Println("\033[32mServer ready to listen\033[0m")
 	err := server.ListenAndServe()
 	if err != nil {
-		fmt.Printf("Error to listen serve: %v", err)
+		fmt.Printf("\033[31mError to listen serve\033[0m: %v", err)
 	}
 }
