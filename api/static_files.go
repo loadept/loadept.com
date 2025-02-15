@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -31,7 +30,6 @@ func ServeStatic(staticDir string) http.Handler {
 		}
 		if info.IsDir() {
 			http.Error(w, "404 page not found", http.StatusNotFound)
-			fmt.Println("es dir bro ", info.Name())
 			return
 		}
 
@@ -52,7 +50,6 @@ func ServeStaticFile(staticFile string) http.Handler {
 		fullPath := filepath.Join(baseDir, cleanedPath)
 
 		if !strings.HasPrefix(fullPath, baseDir) {
-			fmt.Println("Entra")
 			http.Error(w, "404 page not found", http.StatusNotFound)
 			return
 		}
