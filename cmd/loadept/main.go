@@ -12,8 +12,9 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", api.ServeStatic("web/static"))
+	mux.Handle("/robots.txt", api.ServeStaticFile("web/static/robots.txt"))
 
-	mux.HandleFunc("/", handler.Index)
+	mux.Handle("/", handler.Index())
 
 	mux.Handle("/home", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<h1>Hola mundo</h1>"))
