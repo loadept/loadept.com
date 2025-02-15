@@ -8,7 +8,7 @@ converter.setFlavor('github')
 
 const content = document.getElementById('markdown')
 
-const text = content.innerHTML
+const text = content.textContent
 const html = converter.makeHtml(text)
 
 content.remove()
