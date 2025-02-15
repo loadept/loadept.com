@@ -8,13 +8,14 @@ import (
 	"os"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("web/template/index.html")
-	if err != nil {
-		fmt.Println(err)
-	}
+type Data struct {
+	Content string
+}
 
-	file, err := os.Open("data.md")
+func Index() http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles("web/template/index.html"))
+
+	file, err := os.Open("web/static/data.md")
 	if err != nil {
 		fmt.Println("Error al leer", err)
 	}
@@ -32,7 +33,9 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		content = append(content, buffer[:n]...)
 	}
 
-	tmpl.ExecuteTemplate(w, "index.html", map[string]string{
-		"md": string(content),
-	})
+	return func(w http.ResponseWriter, r *http.Request) {
+		tmpl.Execute(w, Data{
+			Content: string(content),
+		})
+	}
 }
