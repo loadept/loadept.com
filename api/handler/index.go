@@ -13,7 +13,16 @@ type Data struct {
 }
 
 func Index() http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("web/template/index.html"))
+	return func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("web/template/index.html"))
+		tmpl.Execute(w, Data{
+			Content: "Hola",
+		})
+	}
+}
+
+func Docs() http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles("web/template/docs.html"))
 
 	file, err := os.Open("web/static/data.md")
 	if err != nil {
