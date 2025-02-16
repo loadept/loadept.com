@@ -6,19 +6,16 @@ import (
 
 	"github.com/loadept/loadept.com/api"
 	"github.com/loadept/loadept.com/api/handler"
+	"github.com/loadept/loadept.com/api/middleware"
 )
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.Handle("/static/", api.ServeStatic("web/static"))
+	mux.Handle("/static/", middleware.GzipEncoding(api.ServeStatic("web/static")))
 	mux.Handle("/robots.txt", api.ServeStaticFile("web/static/robots.txt"))
 
 	mux.Handle("/", handler.Index())
-
-	mux.Handle("/home", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("<h1>Hola mundo</h1>"))
-	}))
 
 	server := http.Server{
 		Addr:    ":8080",
