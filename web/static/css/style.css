@@ -36,8 +36,7 @@ strong {
 
 @keyframes glitch {
   0%, 100% {
-    background-color: #1f2329;
-    /* background: url('/static/img/loadept-glitch.webp'); */
+    background: url('/static/img/loadept-glitch.webp');
     background-size: 120%;
     background-position: center;
   }
