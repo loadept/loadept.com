@@ -6,3 +6,5 @@ const parsed = marked.parse(text)
 
 content.remove()
 document.getElementById('output').innerHTML = parsed 
+
+hljs.highlightAll()
