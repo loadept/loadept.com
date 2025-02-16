@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    environment:
+      - PORT=8081
+    ports:
+      - 8080:${PORT}
