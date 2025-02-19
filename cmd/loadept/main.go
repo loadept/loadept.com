@@ -29,6 +29,7 @@ func main() {
 
 	mux.Handle("/static/", middleware.GzipEncoding(api.ServeStatic("web/static")))
 	mux.Handle("/robots.txt", api.ServeStaticFile("web/static/robots.txt"))
+	mux.Handle("/sitemap.xml", middleware.GzipEncoding(api.ServeStaticFile("web/static/sitemap.xml")))
 	mux.Handle("/favicon.ico", api.ServeStaticFile("web/static/favicon.ico"))
 
 	mux.Handle("/", handler.Index())

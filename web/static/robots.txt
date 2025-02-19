@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Host
+Host: https://loadept.com
+
+# Sitemaps
+Sitemap: https://loadept.com/sitemap.xml
