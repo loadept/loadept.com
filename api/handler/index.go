@@ -8,16 +8,15 @@ import (
 	"os"
 )
 
-type Data struct {
-	Content string
-}
-
 func Index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
 		tmpl := template.Must(template.ParseFiles("web/template/index.html"))
-		tmpl.Execute(w, Data{
-			Content: "Hola",
-		})
+		tmpl.Execute(w, nil)
 	}
 }
 
