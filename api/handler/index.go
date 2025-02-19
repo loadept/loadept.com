@@ -42,8 +42,6 @@ func Docs() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl.Execute(w, Data{
-			Content: string(content),
-		})
+		tmpl.Execute(w, nil)
 	}
 }
