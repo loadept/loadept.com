@@ -36,7 +36,7 @@ func main() {
 
 	server := http.Server{
 		Addr:    addr,
-		Handler: mux,
+		Handler: middleware.LoggerMiddleware(mux),
 	}
 
 	log.Printf("\033[32mServer ready to listen on addr %s\033[0m\n", addr)
