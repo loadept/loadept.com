@@ -14,7 +14,7 @@ func ServeStatic(staticDir string) http.Handler {
 		cleanedUrl := filepath.Clean(r.URL.Path)
 		path := filepath.Join(staticDir, cleanedUrl)
 
-		if r.Method != http.MethodGet {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
 			return
 		}
@@ -40,7 +40,7 @@ func ServeStatic(staticDir string) http.Handler {
 func ServeStaticFile(staticFile string) http.Handler {
 	baseDir := filepath.Dir(staticFile)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
 			return
 		}
