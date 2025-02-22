@@ -10,6 +10,10 @@ import (
 
 func Index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
