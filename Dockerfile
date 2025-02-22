@@ -14,8 +14,10 @@ COPY . .
 
 RUN go build -v -x -o loadept.com cmd/loadept/main.go
 
-# RUN STAGE
+# RUNTIME STAGE
 FROM alpine:3.21
+
+RUN apk add --no-cache tzdata
 
 WORKDIR /app
 

@@ -4,6 +4,7 @@ services:
     build: .
     env_file: .env
     environment:
+      - TZ=America/Lima
       - PORT=${PORT}
 
   proxy:
