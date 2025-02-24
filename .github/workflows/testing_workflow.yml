@@ -25,7 +25,7 @@ jobs:
         run: |
           testable_paths=$(go list ./... | grep -v "test/") 
           go test -v $testable_paths | sed -E \
-            's/.*PASS: .*/\x1b[32m&\x1b[0m/g;
+            's/.*PASS.*/\x1b[32m&\x1b[0m/g;
              s/^ok.*/\x1b[32m&\x1b[0m/g;
              s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
 
@@ -51,6 +51,6 @@ jobs:
       - name: start integration testing
         run: |
           go test -v ./test/... | sed -E \
-            's/.*PASS: .*/\x1b[32m&\x1b[0m/g;
+            's/.*PASS.*/\x1b[32m&\x1b[0m/g;
              s/^ok.*/\x1b[32m&\x1b[0m/g;
              s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
