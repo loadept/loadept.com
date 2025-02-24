@@ -1,0 +1,53 @@
+name: Server tests
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  Unit-Testing:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git log -1
+
+      - name: Download go lang
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+      - run: go version
+
+      - name: start unit testing
+        run: |
+          testable_paths=$(go list ./... | grep -v "test/") 
+          go test -v $testable_paths | sed -E \
+            's/.*PASS: .*/\x1b[32m&\x1b[0m/g;
+             s/^ok.*/\x1b[32m&\x1b[0m/g;
+             s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
+
+  Integration-Testing:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git log -1
+
+      - name: Download go lang
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+      - run: go version
+
+      - name: start integration testing
+        run: |
+          go test -v ./test/... | sed -E \
+            's/.*PASS: .*/\x1b[32m&\x1b[0m/g;
+             s/^ok.*/\x1b[32m&\x1b[0m/g;
+             s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
