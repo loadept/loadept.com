@@ -1,11 +1,9 @@
-package middleware_test
+package middleware
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/loadept/loadept.com/api/middleware"
 )
 
 func TestLoggerMiddleware(t *testing.T) {
@@ -14,7 +12,7 @@ func TestLoggerMiddleware(t *testing.T) {
 		w.Write([]byte("OK"))
 	})
 
-	handler := middleware.LoggerMiddleware(testHandler)
+	handler := LoggerMiddleware(testHandler)
 
 	req := httptest.NewRequest("GET", "/", nil)
 	rr := httptest.NewRecorder()

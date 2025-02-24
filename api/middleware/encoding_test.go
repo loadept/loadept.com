@@ -1,4 +1,4 @@
-package middleware_test
+package middleware
 
 import (
 	"compress/gzip"
@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/loadept/loadept.com/api/middleware"
 )
 
 func mockHandler() http.Handler {
@@ -21,7 +19,7 @@ func TestGzipEncodig(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", nil)
 		rr := httptest.NewRecorder()
 
-		handler := middleware.GzipEncoding(mockHandler())
+		handler := GzipEncoding(mockHandler())
 		handler.ServeHTTP(rr, req)
 
 		if rr.Header().Get("Content-Encoding") == "gzip" {
@@ -39,7 +37,7 @@ func TestGzipEncodig(t *testing.T) {
 		req.Header.Set("Accept-Encoding", "gzip")
 		rr := httptest.NewRecorder()
 
-		handler := middleware.GzipEncoding(mockHandler())
+		handler := GzipEncoding(mockHandler())
 		handler.ServeHTTP(rr, req)
 
 		if rr.Header().Get("Content-Encoding") != "gzip" {
