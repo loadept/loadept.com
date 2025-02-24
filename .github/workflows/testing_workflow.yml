@@ -31,6 +31,9 @@ jobs:
 
   Integration-Testing:
     runs-on: ubuntu-24.04
+    needs:
+      - Unit-Testing
+    if: success()
 
     steps:
       - name: Checkout source
