@@ -21,7 +21,7 @@ jobs:
           go-version: '1.24.0'
       - run: go version
 
-      - name: start unit testing
+      - name: Start unit testing
         run: |
           testable_paths=$(go list ./... | grep -v "test/") 
           go test -v $testable_paths | sed -E \
@@ -48,7 +48,7 @@ jobs:
           go-version: '1.24.0'
       - run: go version
 
-      - name: start integration testing
+      - name: Start integration testing
         run: |
           go test -v ./test/... | sed -E \
             's/.*PASS.*/\x1b[32m&\x1b[0m/g;
