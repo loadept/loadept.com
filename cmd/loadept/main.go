@@ -18,8 +18,8 @@ var (
 func init() {
 	PORT := os.Getenv("PORT")
 	if len(PORT) == 0 {
-		log.Println("The PORT variable is not defined")
-		os.Exit(1)
+		log.Println("PORT variable is not defined, using default port")
+		PORT = "8080"
 	}
 	addr = fmt.Sprintf(":%s", PORT)
 }
