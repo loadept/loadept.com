@@ -16,7 +16,7 @@ type sqlite struct {
 func (s *sqlite) Connect() error {
 	DB_NAME := config.Env.DB_NAME
 	if len(DB_NAME) == 0 {
-		return fmt.Errorf("DB variable not defined")
+		return fmt.Errorf("DB_NAME variable is not defined")
 	}
 
 	db, err := sql.Open("sqlite3", DB_NAME)
