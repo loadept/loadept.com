@@ -18,9 +18,13 @@ type dbconnection interface {
 	Close() error
 }
 
-func NewConnection() dbconnection {
+func NewConnection() (dbconnection, error) {
+	var err error
 	once.Do(func() {
-		instance = &sqlite{}
+		sqliteDB := &sqlite{}
+		if err = sqliteDB.Connect(); err == nil {
+			instance = sqliteDB
+		}
 	})
-	return instance
+	return instance, err
 }
