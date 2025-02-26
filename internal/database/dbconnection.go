@@ -18,6 +18,9 @@ type dbconnection interface {
 	Close() error
 }
 
+// NewConnection returns a new SQLite connection as a dbconnection instance.
+//
+// This function ensures a single instance and should not call Connect() again.
 func NewConnection() (dbconnection, error) {
 	var err error
 	once.Do(func() {
