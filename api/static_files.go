@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+// ServeStatic defines a controller to serve static files from a directory.
+//
+// It is strictly necessary that the endpoint definition has the name /static/
+//
+// This way, uniqueness is guaranteed for accessing static files.
 func ServeStatic(staticDir string) http.Handler {
 	fs := http.FileServer(http.Dir(staticDir))
 
@@ -37,6 +42,11 @@ func ServeStatic(staticDir string) http.Handler {
 	}))
 }
 
+// ServeStaticFile defines a handler that returns a static file from a data path.
+//
+// The name of the endpoint is not strict, as in the case of "ServeStatic"
+//
+// which must have a /static/ prefix.
 func ServeStaticFile(staticFile string) http.Handler {
 	baseDir := filepath.Dir(staticFile)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -25,7 +25,7 @@ var (
 //
 // system-defined variables.
 //
-// Prepares Env to load and directly access these variables
+// Prepares Env to load and directly access these variables.
 func LoadConfig() {
 	once.Do(func() {
 		if err := godotenv.Load(); err != nil {
@@ -40,7 +40,7 @@ func LoadConfig() {
 	})
 }
 
-// getEnv loads system environment variables if not defined, loads default variables
+// getEnv loads system environment variables if not defined, loads default variables.
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value

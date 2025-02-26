@@ -11,7 +11,7 @@ var (
 	once     sync.Once
 )
 
-// dbconnection defines methods needed to create a connection to sqlite
+// dbconnection defines methods needed to create a connection to sqlite.
 type dbconnection interface {
 	Connect() error
 	GetNow() (*time.Time, error)
