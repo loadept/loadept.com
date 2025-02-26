@@ -8,14 +8,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Config struct {
+type config struct {
 	PORT      string
 	DB_NAME   string
 	REDIS_URI string
 }
 
 var (
-	Env  *Config
+	Env  *config
 	once sync.Once
 )
 
@@ -25,7 +25,7 @@ func LoadConfig() {
 			log.Println("No .env variables defined, using default variables")
 		}
 
-		Env = &Config{
+		Env = &config{
 			PORT:      getEnv("PORT", "8080"),
 			DB_NAME:   getEnv("DB_NAME", "database.db"),
 			REDIS_URI: getEnv("REDIS_URI", ""),
