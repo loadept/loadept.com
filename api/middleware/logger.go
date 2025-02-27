@@ -6,16 +6,28 @@ import (
 	"time"
 )
 
+// loggerResponseWriter is a structure that extends the ResponseWriter interface,
+//
+// adding the statusCode field becoming a custom ResponseWriter.
 type loggerResponseWriter struct {
 	http.ResponseWriter
 	statusCode int
 }
 
+// WriteHeader overrides the Writeheader method, assigning the status code to
+// the new
+//
+//	statusCode
+//
+// field
 func (lrw *loggerResponseWriter) WriteHeader(code int) {
 	lrw.statusCode = code
 	lrw.ResponseWriter.WriteHeader(code)
 }
 
+// LoggerMiddleware writes logs of requests forwarded by the proxy to tty,
+//
+// as well as taking the statusCode field with the value assigned in WriteHeader.
 func LoggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
