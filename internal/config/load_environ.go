@@ -14,13 +14,28 @@ var (
 	once sync.Once
 )
 
-// LoadConfig loads environment variables from a .env file
+// LoadConfig loads environment variables from a .env file, if present,
 //
-// if no such file is found, it will use default variables or
+// or uses default values defined in the "config" structure.
 //
-// system-defined variables.
+// The function is only executed once thanks to "sync.Once", ensuring that
 //
-// Prepares Env to load and directly access these variables.
+// the configuration is loaded safely and efficiently.
+//
+// Values are obtained using "env" and "default" tags in the "config" structure:
+//
+// - "env": Name of the environment variable.
+//
+// - "default": Default value if the environment variable is not defined.
+//
+// Example structure:
+//
+//	type config struct {
+//		PORT string `env:"PORT" default:"8080"`
+//		DB string `env:"DB_NAME" default:"database.db"`
+//	}
+//
+// Once the configuration is loaded, the variables can be accessed via "Env".
 func LoadConfig() {
 	once.Do(func() {
 		if err := godotenv.Load(); err != nil {
