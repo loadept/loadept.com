@@ -22,8 +22,32 @@ func Index() http.HandlerFunc {
 
 		currYear := time.Now().Year()
 
-		tmpl := template.Must(template.ParseFiles("web/template/index.html"))
-		tmpl.Execute(w, map[string]int{"Year": currYear})
+		tmpl := template.Must(template.ParseFiles(
+			"web/template/layout/base.tmpl",
+			"web/template/layout/header.tmpl",
+			"web/template/layout/footer.tmpl",
+			"web/template/index.html",
+		))
+		tmpl.ExecuteTemplate(w, "base", map[string]int{"Year": currYear})
+	}
+}
+
+func About() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		currYear := time.Now().Year()
+
+		tmpl := template.Must(template.ParseFiles(
+			"web/template/layout/base.tmpl",
+			"web/template/layout/header.tmpl",
+			"web/template/layout/footer.tmpl",
+			"web/template/about.html",
+		))
+		tmpl.ExecuteTemplate(w, "base", map[string]int{"Year": currYear})
 	}
 }
 
