@@ -6,21 +6,24 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"time"
 )
 
 func Index() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet && r.Method != http.MethodHead {
-			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
-			return
-		}
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		currYear := time.Now().Year()
 
 		tmpl := template.Must(template.ParseFiles("web/template/index.html"))
-		tmpl.Execute(w, nil)
+		tmpl.Execute(w, map[string]int{"Year": currYear})
 	}
 }
 

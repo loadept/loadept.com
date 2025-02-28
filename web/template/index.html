@@ -25,7 +25,7 @@
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col">
   <header class="flex justify-between gap-1 md:mx-30 my-3">
     <ul class="flex list-none m-0 p-0 justify-evenly md:gap-12 gap-3 items-center">
       <li>
@@ -109,13 +109,14 @@
     </ul>
   </header>
 
-  <main class="mt-22">
-    <section id="content" class="grid md:grid-cols-[2fr_3fr] gap-10">
+  <main class="flex-grow mt-12">
+    <section id="content" class="grid md:grid-cols-[2fr_3fr] gap-5 md:gap-20">
       <div class="flex flex-col items-center md:justify-self-end justify-self-center">
         <div id="logo" class="md:size-[18rem] rounded-full size-[13rem]">
         </div>
       </div>
-      <article class="self-center md:justify-self-start justify-self-center text-sm md:text-base md:text-left text-center">
+      <article
+        class="self-center md:justify-self-start justify-self-center text-sm md:text-base md:text-left text-center">
         <p>
           Aquí comparto lo que aprendiendo sobre <strong class="text-[#c678dd]">Linux</strong>,
           <strong class="text-[#e06c75]">programación</strong>,
@@ -125,12 +126,21 @@
           <strong class="text-[#61afef]">Go</strong> y más,
           con proyectos y notas en Markdown.
         </p>
-        <br>
         <p>
           Espero que te sirva tanto como a mí. <span class="text-amber-300 text-3xl">󰈸</span>
         </p>
     </section>
   </main>
+
+  <footer class="py-8 bg-linear-to-t from-[#282c34] via-80% via-[#282c34] to-[#1f2329]">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center justify-center text-center">
+        <p class="text-sm text-[#abb2bf]">
+        <span class="text-[#c678dd]">año</span> <span class="text-[#e06c75]">:=</span> {{ .Year }}
+        </p>
+      </div>
+    </div>
+  </footer>
 </body>
 
 </html>
