@@ -3,16 +3,11 @@ package config
 import (
 	"log"
 	"os"
+	"reflect"
 	"sync"
 
 	"github.com/joho/godotenv"
 )
-
-type config struct {
-	PORT      string
-	DB_NAME   string
-	REDIS_URI string
-}
 
 var (
 	Env  *config
@@ -32,10 +27,26 @@ func LoadConfig() {
 			log.Println("No .env variables defined, using default variables")
 		}
 
-		Env = &config{
-			PORT:      getEnv("PORT", "8080"),
-			DB_NAME:   getEnv("DB_NAME", "database.db"),
-			REDIS_URI: getEnv("REDIS_URI", ""),
+		Env = &config{}
+
+		v := reflect.ValueOf(Env).Elem()
+		t := v.Type()
+
+		for i := 0; i < v.NumField(); i++ {
+			field := t.Field(i)
+
+			envKey := field.Tag.Get("env")
+			if envKey == "" {
+				continue
+			}
+
+			defaultValue := field.Tag.Get("default")
+			if defaultValue == "" {
+				defaultValue = v.Field(i).String()
+			}
+
+			value := getEnv(envKey, defaultValue)
+			v.Field(i).SetString(value)
 		}
 	})
 }
