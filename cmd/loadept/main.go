@@ -24,7 +24,7 @@ func main() {
 	mux.Handle("/favicon.ico", api.ServeStaticFile("web/static/favicon.ico"))
 
 	mux.Handle("/", handler.Index())
-	mux.Handle("/about", handler.About())
+	mux.Handle("/about", middleware.GzipEncoding(handler.About()))
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%s", config.Env.PORT),
