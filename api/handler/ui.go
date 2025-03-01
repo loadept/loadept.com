@@ -10,6 +10,13 @@ import (
 )
 
 func Index() http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles(
+		"web/template/layout/base.tmpl",
+		"web/template/layout/header.tmpl",
+		"web/template/layout/footer.tmpl",
+		"web/template/index.html",
+	))
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -22,17 +29,18 @@ func Index() http.HandlerFunc {
 
 		currYear := time.Now().Year()
 
-		tmpl := template.Must(template.ParseFiles(
-			"web/template/layout/base.tmpl",
-			"web/template/layout/header.tmpl",
-			"web/template/layout/footer.tmpl",
-			"web/template/index.html",
-		))
 		tmpl.ExecuteTemplate(w, "base", map[string]int{"Year": currYear})
 	}
 }
 
 func About() http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles(
+		"web/template/layout/base.tmpl",
+		"web/template/layout/header.tmpl",
+		"web/template/layout/footer.tmpl",
+		"web/template/about.html",
+	))
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			http.Error(w, "This method is not allowed", http.StatusMethodNotAllowed)
@@ -41,12 +49,6 @@ func About() http.HandlerFunc {
 
 		currYear := time.Now().Year()
 
-		tmpl := template.Must(template.ParseFiles(
-			"web/template/layout/base.tmpl",
-			"web/template/layout/header.tmpl",
-			"web/template/layout/footer.tmpl",
-			"web/template/about.html",
-		))
 		tmpl.ExecuteTemplate(w, "base", map[string]int{"Year": currYear})
 	}
 }
