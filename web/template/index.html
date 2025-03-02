@@ -1,5 +1,5 @@
 {{ define "content" }}
-<main class="flex-grow mt-12">
+<div class="container mx-auto px-4">
   <section id="content" class="grid md:grid-cols-[2fr_3fr] gap-5 md:gap-20">
     <div class="flex flex-col items-center md:justify-self-end justify-self-center">
       <div id="logo" class="md:size-[18rem] rounded-full size-[13rem]">
@@ -20,5 +20,24 @@
         Espero que te sirva tanto como a mí. <span class="text-amber-300 text-3xl">󰈸</span>
       </p>
   </section>
-</main>
+  <div class="space-y-6 mt-12">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl text-[#98c379]"></span>
+      <h2 class="text-2xl font-bold text-[#e5c07b]">Contenido</h2>
+    </div>
+
+    <div class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+          <!--TODO: add category buttons-->
+        </div>
+        <div class="relative flex items-center min-w-[200px]">
+          <span class="text-3xl text-[#528bff] absolute left-3"></span>
+          <input type="text" placeholder="Buscar..."
+            class="w-full bg-[#282c34] rounded-md py-2 pl-10 pr-4 text-sm text-[#abb2bf] placeholder:text-[#528bff] focus:outline-none" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {{ end }}
