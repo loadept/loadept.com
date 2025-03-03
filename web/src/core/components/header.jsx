@@ -1,7 +1,7 @@
 
 export const Header = () => {
   return (
-    <header className="flex justify-between gap-1 md:mx-30 my-3">
+    <header className="flex justify-between gap-1 md:mx-30 my-3 top-3 sticky">
       <ul className="flex list-none m-0 p-0 justify-evenly md:gap-12 gap-3 items-center">
         <li>
           <a href="https://github.com/loadept" target="_blank" title="github"
@@ -73,12 +73,12 @@ export const Header = () => {
       </ul>
       <ul className="flex text-xs md:text-sm list-none m-0 p-0 justify-evenly md:gap-12 gap-3 items-center">
         <li className="hover:text-[#528bff] transition-colors">
-          <a href="/" title="Inicio">
+          <a href="/" title="home">
             Inicio
           </a>
         </li>
         <li className="hover:text-[#528bff] transition-colors">
-          <a href="/about" title="Sobre mí">
+          <a href="/about" title="about me">
             Sobre mí
           </a>
         </li>
