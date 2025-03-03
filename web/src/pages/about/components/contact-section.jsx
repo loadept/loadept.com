@@ -8,12 +8,10 @@ export const ContactSection = () => {
       <div className="bg-[#282c34] rounded-lg p-6">
         <pre className="text-sm whitespace-pre-wrap">
           <code>{`# Para contactarme
-email: hello@developer.com
-github: github.com/developer
-twitter: @developer
+email: falcorgd@gmail.com
+github: github.com/loadept
 
-# O ejecuta este comando
-npx contact-developer`}</code>
+tiktok: @loadept`}</code>
         </pre>
       </div>
     </section>
