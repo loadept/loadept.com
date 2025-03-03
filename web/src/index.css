@@ -18,48 +18,34 @@
   scrollbar-gutter: stable;
 }
 
-body, *, ::after, ::before {
-  box-sizing: border-box;
-}
+@theme {
+  --animate-glitch-infinite: glitch infinite 3.5s steps(1);
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
+  @keyframes glitch {
 
-strong {
-  font-weight: bold;
-}
+    0%,
+    100% {
+      background: url('./assets/img/loadept-glitch.webp');
+      background-size: 120%;
+      background-position: center;
+    }
 
-#logo {
-  background: url('./assets/img/loadept-glitch.webp');
-  background-size: 120%;
-  background-position: center;
-  animation: glitch 3.5s infinite steps(1);
-}
+    92.5% {
+      background: url('./assets/img/loadept-glitch-01.webp');
+      background-size: 120%;
+      background-position: center;
+    }
 
-@keyframes glitch {
-  0%, 100% {
-    background: url('./assets/img/loadept-glitch.webp');
-    background-size: 120%;
-    background-position: center;
-  }
+    95% {
+      background: url('./assets/img/loadept-glitch-02.webp');
+      background-size: 120%;
+      background-position: center;
+    }
 
-  92.5% {
-    background: url('./assets/img/loadept-glitch-01.webp');
-    background-size: 120%;
-    background-position: center;
-  }
-
-  95% {
-    background: url('./assets/img/loadept-glitch-02.webp');
-    background-size: 120%;
-    background-position: center;
-  }
-
-  97.5% {
-    background: url('./assets/img/loadept-glitch-03.webp');
-    background-size: 120%;
-    background-position: center;
+    97.5% {
+      background: url('./assets/img/loadept-glitch-03.webp');
+      background-size: 120%;
+      background-position: center;
+    }
   }
 }
