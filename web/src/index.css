@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'FiraCode';
+  src: url('./assets/font/FiraCode.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  font-family: 'FiraCode', sans-serif;
+  font-variant-ligatures: normal;
+  font-weight: 300;
+  background-color: #1f2329;
+  color: #abb2bf;
+  font-size: 17px;
+  scrollbar-gutter: stable;
+}
+
+body, *, ::after, ::before {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+strong {
+  font-weight: bold;
+}
+
+#logo {
+  background: url('./assets/img/loadept-glitch.webp');
+  background-size: 120%;
+  background-position: center;
+  animation: glitch 3.5s infinite steps(1);
+}
+
+@keyframes glitch {
+  0%, 100% {
+    background: url('./assets/img/loadept-glitch.webp');
+    background-size: 120%;
+    background-position: center;
+  }
+
+  92.5% {
+    background: url('./assets/img/loadept-glitch-01.webp');
+    background-size: 120%;
+    background-position: center;
+  }
+
+  95% {
+    background: url('./assets/img/loadept-glitch-02.webp');
+    background-size: 120%;
+    background-position: center;
+  }
+
+  97.5% {
+    background: url('./assets/img/loadept-glitch-03.webp');
+    background-size: 120%;
+    background-position: center;
+  }
+}
