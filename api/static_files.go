@@ -43,7 +43,7 @@ func ServeStatic(staticDir string) http.Handler {
 }
 
 // ServeDir defines a controller to serve static files from a directory.
-func ServeSPA(staticDir string) http.Handler {
+func ServeSPA(staticDir, indexFile string) http.Handler {
 	fs := http.FileServer(http.Dir(staticDir))
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func ServeSPA(staticDir string) http.Handler {
 
 		info, err := os.Stat(path)
 		if os.IsNotExist(err) {
-			http.ServeFile(w, r, filepath.Join(staticDir, "index.html"))
+			http.ServeFile(w, r, filepath.Join(staticDir, indexFile))
 			return
 		} else if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
