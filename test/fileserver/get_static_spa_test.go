@@ -26,7 +26,7 @@ func TestServeSPA(t *testing.T) {
 		t.Fatalf("Error to create temp file: %v", err)
 	}
 
-	handler := api.ServeSPA(tmpDir)
+	handler := api.ServeSPA(tmpDir, "index.html")
 
 	t.Run("Index Path", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/", nil)
