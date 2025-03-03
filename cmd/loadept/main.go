@@ -17,7 +17,7 @@ func init() {
 func main() {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", middleware.GzipEncoding(api.ServeSPA("web/dist")))
+	mux.Handle("/", middleware.GzipEncoding(api.ServeSPA("web/dist", "index.html")))
 
 	server := http.Server{
 		Addr:    fmt.Sprintf(":%s", config.Env.PORT),
