@@ -69,7 +69,7 @@ func ServeSPA(staticDir, indexFile string) http.Handler {
 		}
 
 		if info.IsDir() && r.URL.Path != "/" {
-			http.Error(w, "404 page not found", http.StatusNotFound)
+			http.ServeFile(w, r, filepath.Join(staticDir, indexFile))
 			return
 		}
 
