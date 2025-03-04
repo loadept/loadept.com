@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'preact/hooks'
+// import { useEffect, useState } from 'preact/hooks'
 
 export const Categories = () => {
-  const [data, setData] = useState({ categories: [] })
+  // const [data, setData] = useState({ categories: [] })
 
-  console.log("API_URL =>", API_URL)
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const req = await fetch(`${API_URL}api/categories`)
+  //       const jsonData = await req.json()
+  //       setData(jsonData)
+  //     } catch (err) {
+  //       console.log(err)
+  //     }
+  //   }
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const req = await fetch("http://localhost:8080/api/categories")
-        const jsonData = await req.json()
-        setData(jsonData)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-    fetchCategories()
-  }, [])
+  //   fetchCategories()
+  // }, [])
 
   return (
     <section className="space-y-6 mt-15">
