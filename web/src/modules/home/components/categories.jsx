@@ -27,9 +27,7 @@ export const Categories = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-hide">
-            {data.categories.map((category, k) => (
-              <p key={k}>{category.name}</p>
-            ))}
+
           </div>
           <div className="relative flex items-center min-w-[200px]">
             <span className="text-3xl text-[#528bff] absolute left-3"></span>
