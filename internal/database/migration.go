@@ -19,7 +19,7 @@ func NewMigration(conn *sql.DB) (*migration, error) {
 		return nil, fmt.Errorf("Database connection not initialized")
 	}
 
-	migrationDir := "internal/migration/"
+	migrationDir := "migrations/"
 
 	dirEntry, err := os.ReadDir(migrationDir)
 	if err != nil {
