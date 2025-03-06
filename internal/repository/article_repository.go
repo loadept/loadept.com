@@ -8,12 +8,12 @@ import (
 )
 
 type ArticleRepository struct {
-	con *sql.DB
+	conn *sql.DB
 }
 
-func NewArticleRepository(con *sql.DB) *ArticleRepository {
+func NewArticleRepository(conn *sql.DB) *ArticleRepository {
 	return &ArticleRepository{
-		con: con,
+		conn: conn,
 	}
 }
 
@@ -23,7 +23,7 @@ func (a *ArticleRepository) RegisterArticle(model *model.ArticleModel) error {
 	(id, user_id, title, description, content, category_id)
 	VALUES (?, ?, ?, ?, ?, ?, ?);
 	`
-	stmt, err := a.con.Prepare(query)
+	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (a *ArticleRepository) GetArticleByID(articleID string) (*model.ArticleMode
 	JOIN users ON users.id = articles.user_id
 	WHERE articles.id = ?;
 	`
-	stmt, err := a.con.Prepare(query)
+	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (a *ArticleRepository) SelectArticles(categoryName, articleTitle string, li
 	// add limit and offset params in args slice
 	args = append(args, limit, offset)
 
-	stmt, err := a.con.Prepare(query)
+	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
