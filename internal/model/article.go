@@ -4,18 +4,18 @@ import "time"
 
 type ArticleModel struct {
 	UserModel
-	UserID      uint      `json:"user_id,omitempty"`
-	Title       string    `json:"title,omitempty"`
-	Description string    `json:"description,omitempty"`
-	Content     string    `json:"content,omitempty"`
-	CategoryID  uint      `json:"category_id,omitempty"`
-	Published   bool      `json:"published,omitempty"`
+	UserID      uint       `json:"user_id,omitempty"`
+	Title       string     `json:"title,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Content     string     `json:"content,omitempty"`
+	CategoryID  uint       `json:"category_id,omitempty"`
+	Published   bool       `json:"published,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
 type ArticleResponse struct {
-	Page string `json:"page,omitempty"`
-	Count string `json:"count"`
-	Data []*ArticleModel `json:"data"`
+	Page  string          `json:"page,omitempty"`
+	Count string          `json:"count"`
+	Data  []*ArticleModel `json:"data"`
 }
