@@ -1,1 +1,1 @@
-CREATE INDEX IF NOT EXISTS idx_topics_name ON topics(name);
+-- CREATE INDEX IF NOT EXISTS idx_topics_name ON topics(name);

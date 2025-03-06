@@ -1,1 +1,2 @@
-CREATE INDEX IF NOT EXISTS idx_categories_id ON categories(id);
+-- Not necessary, sqlite creates indexes by default for PRIMARY KEY
+-- CREATE INDEX IF NOT EXISTS idx_categories_id ON categories(id);
