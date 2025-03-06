@@ -17,11 +17,11 @@ func NewArticleRepository(con *sql.DB) *ArticleRepository {
 	}
 }
 
-func (a *ArticleRepository) Register(model *model.ArticleModel) error {
+func (a *ArticleRepository) RegisterArticle(model *model.ArticleModel) error {
 	query := `
 	INSERT INTO articles
-	(user_id, title, description, content, category_id, published)
-	VALUES (?, ?, ?, ?, ?, ?);
+	(id, user_id, title, description, content, category_id)
+	VALUES (?, ?, ?, ?, ?, ?, ?);
 	`
 	stmt, err := a.con.Prepare(query)
 	if err != nil {
@@ -30,12 +30,12 @@ func (a *ArticleRepository) Register(model *model.ArticleModel) error {
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
+		model.ID,
 		model.UserID,
 		model.Title,
 		model.Description,
 		model.Content,
 		model.CategoryID,
-		model.Published,
 	)
 	if err != nil {
 		return err
@@ -52,16 +52,16 @@ func (a *ArticleRepository) Register(model *model.ArticleModel) error {
 	return nil
 }
 
-func (a *ArticleRepository) SelectArticle(articleID int) (*model.ArticleModel, error) {
+func (a *ArticleRepository) GetArticleByID(articleID string) (*model.ArticleModel, error) {
 	query := `
 	SELECT
-		users.username
+		users.username,
 		articles.title,
 		articles.content,
-		articles.created_at
+		articles.updated_at
 	FROM articles
 	JOIN users ON users.id = articles.user_id
-	WHERE article.id = ?;
+	WHERE articles.id = ?;
 	`
 	stmt, err := a.con.Prepare(query)
 	if err != nil {
@@ -73,9 +73,10 @@ func (a *ArticleRepository) SelectArticle(articleID int) (*model.ArticleModel, e
 
 	article := &model.ArticleModel{}
 	if err := rows.Scan(
+		&article.Username,
 		&article.Title,
-		&article.Description,
-		&article.CreatedAt,
+		&article.Content,
+		&article.UpdatedAt,
 	); err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (a *ArticleRepository) SelectArticle(articleID int) (*model.ArticleModel, e
 	return article, nil
 }
 
-func (a *ArticleRepository) SelectAllArticles(categoryName string, limit, page int) ([]*model.ArticleModel, error) {
+func (a *ArticleRepository) SelectArticles(categoryName, articleTitle string, limit, page int) ([]*model.ArticleModel, error) {
 	query := `
 	SELECT
 		articles.id,
@@ -91,13 +92,28 @@ func (a *ArticleRepository) SelectAllArticles(categoryName string, limit, page i
 		articles.description,
 		articles.updated_at
 	FROM articles
-	JOIN users ON users.id = articles.user_id
 	JOIN categories ON categories.id = category_id
-	WHERE published = false AND categories.name LIKE ?
-	ORDER BY articles.updated_at DESC
-	LIMIT ? OFFSET ?;
+	WHERE published = false 	
 	`
+
+	var args []any
+	if len(categoryName) != 0 {
+		query += "AND categories.name LIKE ?"
+		args = append(args, categoryName)
+	}
+	if len(articleTitle) != 0 {
+		query += "AND articles.title LIKE ?"
+		args = append(args, "%"+articleTitle+"%")
+	}
+
+	query += `
+	ORDER BY articles.updated_at DESC
+	LIMIT ? OFFSET ?;`
+
 	offset := (page - 1) * limit
+
+	// add limit and offset params in args slice
+	args = append(args, limit, offset)
 
 	stmt, err := a.con.Prepare(query)
 	if err != nil {
@@ -105,7 +121,7 @@ func (a *ArticleRepository) SelectAllArticles(categoryName string, limit, page i
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(categoryName, limit, offset)
+	rows, err := stmt.Query(args...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +135,7 @@ func (a *ArticleRepository) SelectAllArticles(categoryName string, limit, page i
 			&article.ID,
 			&article.Title,
 			&article.Description,
-			&article.CreatedAt,
+			&article.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
