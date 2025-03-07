@@ -7,7 +7,7 @@ import (
 
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
-	"github.com/loadept/loadept.com/pkg/throwable"
+	"github.com/loadept/loadept.com/pkg/respond"
 )
 
 type ApiArticleHandler struct {
@@ -22,7 +22,7 @@ func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 
 func (h *ApiArticleHandler) GetArticleByID(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
 		}, http.StatusMethodNotAllowed)
 		return
@@ -33,23 +33,23 @@ func (h *ApiArticleHandler) GetArticleByID(w http.ResponseWriter, r *http.Reques
 	article, err := h.service.GetArticleByID(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			throwable.Json(w, map[string]string{
+			respond.JSON(w, respond.Map{
 				"detail": "No results found",
 			}, http.StatusNotFound)
 			return
 		}
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 		return
 	}
 
-	throwable.Json(w, article, http.StatusOK)
+	respond.JSON(w, article, http.StatusOK)
 }
 
 func (h *ApiArticleHandler) GetRecentArticles(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
 		}, http.StatusMethodNotAllowed)
 		return
@@ -59,7 +59,7 @@ func (h *ApiArticleHandler) GetRecentArticles(w http.ResponseWriter, r *http.Req
 
 	articles, err := h.service.GetRecentArticles(category)
 	if err != nil {
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 		return
@@ -70,12 +70,12 @@ func (h *ApiArticleHandler) GetRecentArticles(w http.ResponseWriter, r *http.Req
 		Count: count,
 		Data:  articles,
 	}
-	throwable.Json(w, response, http.StatusOK)
+	respond.JSON(w, response, http.StatusOK)
 }
 
 func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
 		}, http.StatusMethodNotAllowed)
 		return
@@ -90,7 +90,7 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 
 	articles, err := h.service.GetArticles(category, title, page)
 	if err != nil {
-		throwable.Json(w, map[string]string{
+		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 		return
@@ -102,5 +102,5 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 		Count: count,
 		Data:  articles,
 	}
-	throwable.Json(w, response, http.StatusOK)
+	respond.JSON(w, response, http.StatusOK)
 }
