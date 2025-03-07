@@ -1,11 +1,13 @@
-package throwable
+package respond 
 
 import (
 	"encoding/json"
 	"net/http"
 )
 
-func Json(w http.ResponseWriter, response any, statusCode int) {
+type Map map[string]any
+
+func JSON(w http.ResponseWriter, response any, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
