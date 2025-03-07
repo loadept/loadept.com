@@ -3,22 +3,40 @@ package service
 import (
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/repository"
+	"github.com/loadept/loadept.com/pkg/util"
 )
 
 type ArticleService struct {
 	repository *repository.ArticleRepository
+	validator *validator.Validate
 }
 
-func NewArticleService(repository *repository.ArticleRepository) *ArticleService {
+func NewArticleService(repository *repository.ArticleRepository, validator *validator.Validate) *ArticleService {
 	return &ArticleService{
 		repository: repository,
+		validator: validator,
 	}
 }
 
-func (s *ArticleService) RegisterArticle() {
+func (s *ArticleService) RegisterArticle(body *model.ArticleModel) error {
+	err := s.validator.Struct(body)
+	if err != nil {
+		return util.HandleValidationErrors(err)
+	}
 
+	id := uuid.New()	
+	body.ID = id.String()
+
+	err = s.repository.RegisterArticle(body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *ArticleService) GetArticleByID(articleID string) (*model.ArticleModel, error) {
