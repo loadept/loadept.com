@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id VARCHAR(36) PRIMARY KEY NOT NULL,
     name VARCHAR(50) NOT NULL,
-    hex_color VARCHAR(7),
-    utf_icon VARCHAR(10)
+    description VARCHAR(255) NOT NULL,
+    hex_color VARCHAR(7) NOT NULL,
+    nerd_icon VARCHAR(10) NOT NULL
 );

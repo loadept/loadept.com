@@ -1,2 +1,0 @@
--- Not necessary, sqlite creates indexes by default for PRIMARY KEY
--- CREATE INDEX IF NOT EXISTS idx_users_id ON users(id);
