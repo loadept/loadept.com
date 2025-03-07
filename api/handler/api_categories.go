@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -66,10 +67,11 @@ func (h *ApiCategoriesHandler) RegisterCategory(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	w.Header().Set("Location", fmt.Sprintf("/api/category/%s", category.ID))
 	respond.JSON(w, respond.Map{
 		"message":     "Category inserted successfully",
 		"category_id": category.ID,
-	}, http.StatusOK)
+	}, http.StatusCreated)
 }
 
 func (h *ApiCategoriesHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
