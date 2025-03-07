@@ -21,7 +21,7 @@ func (a *ArticleRepository) RegisterArticle(model *model.ArticleModel) error {
 	query := `
 	INSERT INTO articles
 	(id, user_id, title, description, content, category_id)
-	VALUES (?, ?, ?, ?, ?, ?, ?);
+	VALUES (?, ?, ?, ?, ?, ?);
 	`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
