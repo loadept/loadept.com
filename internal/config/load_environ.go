@@ -47,7 +47,7 @@ func LoadConfig() {
 		v := reflect.ValueOf(Env).Elem()
 		t := v.Type()
 
-		for i := 0; i < v.NumField(); i++ {
+		for i := range v.NumField() {
 			field := t.Field(i)
 
 			envKey := field.Tag.Get("env")
