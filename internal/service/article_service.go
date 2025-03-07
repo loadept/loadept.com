@@ -12,26 +12,26 @@ import (
 
 type ArticleService struct {
 	repository *repository.ArticleRepository
-	validator *validator.Validate
+	validator  *validator.Validate
 }
 
 func NewArticleService(repository *repository.ArticleRepository, validator *validator.Validate) *ArticleService {
 	return &ArticleService{
 		repository: repository,
-		validator: validator,
+		validator:  validator,
 	}
 }
 
-func (s *ArticleService) RegisterArticle(body *model.ArticleModel) error {
+func (s *ArticleService) RegisterArticle(userID string, body *model.ArticleModel) error {
 	err := s.validator.Struct(body)
 	if err != nil {
 		return util.HandleValidationErrors(err)
 	}
 
-	id := uuid.New()	
+	id := uuid.New()
 	body.ID = id.String()
 
-	err = s.repository.RegisterArticle(body)
+	err = s.repository.RegisterArticle(userID, body)
 	if err != nil {
 		return err
 	}
