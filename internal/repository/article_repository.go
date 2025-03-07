@@ -17,12 +17,11 @@ func NewArticleRepository(conn *sql.DB) *ArticleRepository {
 	}
 }
 
-func (a *ArticleRepository) RegisterArticle(model *model.ArticleModel) error {
+func (a *ArticleRepository) RegisterArticle(userID string, model *model.ArticleModel) error {
 	query := `
 	INSERT INTO articles
 	(id, user_id, title, description, content, category_id)
-	VALUES (?, ?, ?, ?, ?, ?);
-	`
+	VALUES (?, ?, ?, ?, ?, ?);`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return err
@@ -31,7 +30,7 @@ func (a *ArticleRepository) RegisterArticle(model *model.ArticleModel) error {
 
 	res, err := stmt.Exec(
 		model.ID,
-		model.UserID,
+		userID,
 		model.Title,
 		model.Description,
 		model.Content,
