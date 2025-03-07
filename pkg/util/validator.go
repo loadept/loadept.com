@@ -8,11 +8,11 @@ import (
 )
 
 type ValidationError struct {
-	Message string
+	message string
 }
 
 func (e ValidationError) Error() string {
-	return e.Message
+	return e.message
 }
 
 func HandleValidationErrors(err error) error {
@@ -33,7 +33,7 @@ func HandleValidationErrors(err error) error {
 			default:
 				message = fmt.Sprintf("Validation error: %s", e.Tag())
 			}
-			return ValidationError{Message: message}
+			return ValidationError{message: message}
 		}
 	}
 	return err
