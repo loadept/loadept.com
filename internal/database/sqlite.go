@@ -34,6 +34,10 @@ func (s *sqlite) Connect() error {
 	if err := db.Ping(); err != nil {
 		return err
 	}
+	_, err = db.Exec("PRAGMA foreign_keys = ON;")
+	if err != nil {
+		return err
+	}
 
 	s.db = db
 	return nil
