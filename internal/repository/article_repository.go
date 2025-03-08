@@ -60,8 +60,7 @@ func (a *ArticleRepository) GetArticleByID(articleID string) (*model.ArticleMode
 		articles.updated_at
 	FROM articles
 	JOIN users ON users.id = articles.user_id
-	WHERE articles.id = ?;
-	`
+	WHERE articles.id = ?;`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return nil, err
@@ -92,8 +91,7 @@ func (a *ArticleRepository) SelectArticles(categoryName, articleTitle string, li
 		articles.updated_at
 	FROM articles
 	JOIN categories ON categories.id = category_id
-	WHERE published = false 	
-	`
+	WHERE published = false`
 
 	var args []any
 	if len(categoryName) != 0 {

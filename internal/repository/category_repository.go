@@ -21,8 +21,7 @@ func (a *CategoryRepository) RegisterCategory(model *model.CategoryModel) error 
 	query := `
 	INSERT INTO categories 
 	(id, name, description, hex_color, utf_icon)
-	VALUES (?, ?, ?, ?, ?);
-	`
+	VALUES (?, ?, ?, ?, ?);`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return err
@@ -59,9 +58,7 @@ func (a *CategoryRepository) GetCategoryByID(categoryID string) (*model.Category
 		hex_color,
 		utf_icon
 	FROM categories
-	WHERE id = ?
-	`
-
+	WHERE id = ?;`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
 		return nil, err
