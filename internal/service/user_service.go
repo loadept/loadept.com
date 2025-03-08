@@ -31,7 +31,7 @@ func (s *UserService) RegisterUser(body *model.RegisterUserModel) error {
 	id := uuid.New()
 	body.ID = id.String()
 
-	hasPassword, err := util.HasPassword(body.Password)
+	hasPassword, err := util.HashPassword(body.Password)
 	if err != nil {
 		return err
 	}
