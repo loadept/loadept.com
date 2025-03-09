@@ -11,6 +11,7 @@ import (
 	"github.com/loadept/loadept.com/api"
 	"github.com/loadept/loadept.com/api/handler"
 	"github.com/loadept/loadept.com/api/middleware"
+	"github.com/loadept/loadept.com/internal/auth"
 	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/database"
 	"github.com/loadept/loadept.com/internal/repository"
@@ -45,9 +46,12 @@ func main() {
 
 	validate := validator.New()
 
+	authService := auth.NewAuthService("JWT")
+	authMiddleware := middleware.NewAuthMiddleware(authService)
+
 	userRepo := repository.NewUserRepository(conn)
 	userService := service.NewUserService(userRepo, validate)
-	userHandler := handler.NewApiUserHandler(userService)
+	userHandler := handler.NewApiUserHandler(userService, authService)
 
 	articleRepo := repository.NewArticleRepository(conn)
 	articleService := service.NewArticleService(articleRepo, validate)
@@ -75,10 +79,10 @@ func main() {
 
 	// Protected router for admin
 	{
-		mux.Handle("/api/category/register", middleware.AuthMiddleware(
+		mux.Handle("/api/category/register", authMiddleware(
 			http.HandlerFunc(categoryHandler.RegisterCategory),
 		))
-		mux.Handle("/api/article/register", middleware.AuthMiddleware(
+		mux.Handle("/api/article/register", authMiddleware(
 			http.HandlerFunc(handlerArticles.RegisterArticle),
 		))
 	}
