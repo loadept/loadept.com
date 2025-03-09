@@ -53,16 +53,10 @@ func (h *ApiArticleHandler) RegisterArticle(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// TODO: implements jwt
-	userID := r.Header.Get("User")
-	if len(userID) == 0 {
-		respond.JSON(w, respond.Map{
-			"detail": "User id is required",
-		}, http.StatusUnauthorized)
-		return
-	}
+	authContext := r.Context().Value("AuthContext")
+	authUser := authContext.(respond.Map)
 
-	err := h.service.RegisterArticle(userID, &article)
+	err := h.service.RegisterArticle(authUser["user_id"].(string), &article)
 	if err != nil {
 		if _, ok := err.(util.ValidationError); ok {
 			respond.JSON(w, respond.Map{
