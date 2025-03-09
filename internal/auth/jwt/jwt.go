@@ -5,15 +5,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/loadept/loadept.com/internal/config"
 )
 
 type JWT struct {
-	secret string
-}
-
-func JWTAuth() *JWT {
-	return &JWT{secret: config.Env.SECRET_KEY}
+	Secret string
 }
 
 func (j *JWT) CreateToken(userID string, isAdmin bool) (string, error) {
@@ -29,7 +24,7 @@ func (j *JWT) CreateToken(userID string, isAdmin bool) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(j.secret))
+	return token.SignedString([]byte(j.Secret))
 }
 
 func (j *JWT) ValidateToken(tokenString string) (*TokenClaims, error) {
@@ -37,7 +32,7 @@ func (j *JWT) ValidateToken(tokenString string) (*TokenClaims, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method")
 		}
-		return []byte(j.secret), nil
+		return []byte(j.Secret), nil
 	})
 	if err != nil {
 		return nil, err
