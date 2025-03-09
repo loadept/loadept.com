@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/loadept/loadept.com/internal/auth/jwt"
+	"github.com/loadept/loadept.com/internal/auth"
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/loadept/loadept.com/pkg/respond"
@@ -16,12 +16,14 @@ import (
 )
 
 type ApiUserHandler struct {
-	service *service.UserService
+	service      *service.UserService
+	tokenService auth.TokenService
 }
 
-func NewApiUserHandler(service *service.UserService) *ApiUserHandler {
+func NewApiUserHandler(service *service.UserService, tokenService auth.TokenService) *ApiUserHandler {
 	return &ApiUserHandler{
-		service: service,
+		service:      service,
+		tokenService: tokenService,
 	}
 }
 
@@ -71,7 +73,7 @@ func (h *ApiUserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.JWTAuth().CreateToken(result.ID, result.IsAdmin)
+	token, err := h.tokenService.CreateToken(result.ID, result.IsAdmin)
 	if err != nil {
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while creating auth token",
