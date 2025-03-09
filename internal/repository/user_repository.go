@@ -52,7 +52,7 @@ func (u *UserRepository) RegisterUser(model *model.RegisterUserModel) error {
 
 func (u *UserRepository) GetUserByName(username string) (*model.UserModel, error) {
 	query := `
-	SELECT id, username, password
+	SELECT id, username, is_admin, password
 	FROM users WHERE username = ?;`
 	stmt, err := u.conn.Prepare(query)
 	if err != nil {
@@ -66,6 +66,7 @@ func (u *UserRepository) GetUserByName(username string) (*model.UserModel, error
 	if err = row.Scan(
 		&user.ID,
 		&user.Username,
+		&user.IsAdmin,
 		&user.Password,
 	); err != nil {
 		return nil, err
