@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -45,20 +46,24 @@ func (s *UserService) RegisterUser(body *model.RegisterUserModel) error {
 	return nil
 }
 
-func (s *UserService) GetUser(body *model.UserModel) (string, error) {
+func (s *UserService) GetUser(body *model.UserModel) (*model.UserModel, error) {
 	err := s.validator.Struct(body)
 	if err != nil {
-		return "", util.HandleValidationErrors(err)
+		return nil, util.HandleValidationErrors(err)
 	}
 
 	user, err := s.repository.GetUserByName(body.Username)
 	if err != nil {
-		return "", err
+		if strings.Contains(err.Error(), "no rows in result set") ||
+			strings.Contains(err.Error(), "no such column") {
+			return nil, fmt.Errorf("Incorrect credentials")
+		}
+		return nil, err
 	}
 
 	if !util.CheckPasswordHash(body.Password, user.Password) {
-		return "", fmt.Errorf("Incorrect credentials")
+		return nil, fmt.Errorf("Incorrect credentials")
 	}
 
-	return user.ID, nil
+	return user, nil
 }

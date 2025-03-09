@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/loadept/loadept.com/internal/auth/jwt"
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/loadept/loadept.com/pkg/respond"
@@ -51,7 +52,7 @@ func (h *ApiUserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, err := h.service.GetUser(&user)
+	result, err := h.service.GetUser(&user)
 	if err != nil {
 		if _, ok := err.(util.ValidationError); ok {
 			respond.JSON(w, respond.Map{
@@ -70,8 +71,15 @@ func (h *ApiUserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	token, err := jwt.JWTAuth().CreateToken(result.ID, result.IsAdmin)
+	if err != nil {
+		respond.JSON(w, respond.Map{
+			"detail": "An error occurred while creating auth token",
+		}, http.StatusInternalServerError)
+	}
+
 	respond.JSON(w, respond.Map{
-		"user_id": userID,
+		"auth_token": token,
 	}, http.StatusCreated)
 }
 
