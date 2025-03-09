@@ -20,7 +20,7 @@ func NewCetogoryRepository(conn *sql.DB) *CategoryRepository {
 func (a *CategoryRepository) RegisterCategory(model *model.CategoryModel) error {
 	query := `
 	INSERT INTO categories 
-	(id, name, description, hex_color, utf_icon)
+	(id, name, description, hex_color, nerd_icon)
 	VALUES (?, ?, ?, ?, ?);`
 	stmt, err := a.conn.Prepare(query)
 	if err != nil {
@@ -56,7 +56,7 @@ func (a *CategoryRepository) GetCategoryByID(categoryID string) (*model.Category
 		name,
 		description,
 		hex_color,
-		utf_icon
+		nerd_icon
 	FROM categories
 	WHERE id = ?;`
 	stmt, err := a.conn.Prepare(query)
@@ -87,7 +87,7 @@ func (a *CategoryRepository) SelectCategories(limit, page int) ([]*model.Categor
 		name,
 		description,
 		hex_color,
-		utf_icon
+		nerd_icon
 	FROM categories
 	LIMIT ? OFFSET ?;`
 
