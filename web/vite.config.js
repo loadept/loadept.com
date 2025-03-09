@@ -8,4 +8,7 @@ export default defineConfig({
     preact(),
     tailwindcss(),
   ],
+  define: {
+    API_URL: JSON.stringify(process.env.API_URL)
+  }
 })
