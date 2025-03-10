@@ -1,21 +1,22 @@
-// import { useEffect, useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 
 export const Categories = () => {
-  // const [data, setData] = useState({ categories: [] })
+  const [data, setData] = useState({ data: [] })
+  console.log(API_URL)
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const req = await fetch(`${API_URL}api/category`)
+        const jsonData = await req.json()
+        setData(jsonData)
+        console.log(jsonData)
+      } catch (err) {
+        console.log(err)
+      }
+    }
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const req = await fetch(`${API_URL}api/categories`)
-  //       const jsonData = await req.json()
-  //       setData(jsonData)
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   }
-
-  //   fetchCategories()
-  // }, [])
+    fetchCategories()
+  }, [])
 
   return (
     <section className="space-y-6 mt-15">
@@ -27,7 +28,15 @@ export const Categories = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-hide">
-
+            {data.data.map((category, k) => (
+              <button
+                key={k}
+                className="flex items-center px-3 py-1.5 rounded-md transition-colors whitespace-nowrap text-sm text-[#abb2bf] hover:text-[#528bff]"
+              >
+                <span className="text-2xl mr-2">{category.utf_icon}</span>
+                {category.name}
+              </button>
+            ))}
           </div>
           <div className="relative flex items-center min-w-[200px]">
             <span className="text-3xl text-[#528bff] absolute left-3"></span>

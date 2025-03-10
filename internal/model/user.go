@@ -4,10 +4,10 @@ import "time"
 
 type UserModel struct {
 	Model
-	Username  string `json:"username,omitempty" validate:"required,max=50,min=1"`
-	Password  string `json:"password,omitempty" validate:"required,max=255,min=6"`
-	IsAdmin   bool
-	IsActive  bool
+	Username  string     `json:"username,omitempty" validate:"required,max=50,min=1"`
+	Password  string     `json:"password,omitempty" validate:"required,max=255,min=6"`
+	IsAdmin   bool       `json:"is_admin,omitempty"`
+	IsActive  bool       `json:"is_active,omitempty"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
