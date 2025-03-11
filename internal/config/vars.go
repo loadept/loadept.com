@@ -18,6 +18,7 @@ package config
 //
 //	fmt.Println(Env.PORT)  // Prints the configured port or "8080" if not set.
 type config struct {
+	DEBUG          string `env:"DEBUG" default:"true"`
 	PORT           string `env:"PORT" default:"8080"`
 	DB_NAME        string `env:"DB_NAME" default:"db.sqlite"`
 	REDIS_ADDR     string `env:"REDIS_ADDR" default:"localhost"`
