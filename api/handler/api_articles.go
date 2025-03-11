@@ -1,19 +1,13 @@
 package handler
 
 import (
-	"database/sql"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/loadept/loadept.com/pkg/respond"
-	"github.com/loadept/loadept.com/pkg/util"
 )
 
 type ApiArticleHandler struct {
@@ -26,63 +20,11 @@ func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 	}
 }
 
-func (h *ApiArticleHandler) RegisterArticle(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		respond.JSON(w, respond.Map{
-			"detail": "Method '" + r.Method + "' not allowed",
-		}, http.StatusMethodNotAllowed)
-		return
-	}
+// Pseudo cache
+var cache = make(map[string][]model.ArticleModel)
 
-	var article model.ArticleModel
-	if err := json.NewDecoder(r.Body).Decode(&article); err != nil {
-		var errorDetail string
-		switch {
-		case errors.Is(err, io.EOF):
-			errorDetail = "Request body is empty"
-		case strings.Contains(err.Error(), "cannot unmarshal"):
-			errorDetail = "Invalid data type in request"
-		case strings.Contains(err.Error(), "invalid character"):
-			errorDetail = "Invalid JSON format"
-		default:
-			errorDetail = "Error processing request body"
-		}
-		respond.JSON(w, respond.Map{
-			"detail": errorDetail,
-		}, http.StatusBadRequest)
-		return
-	}
-
-	authContext := r.Context().Value("AuthContext")
-	authUser := authContext.(respond.Map)
-
-	err := h.service.RegisterArticle(authUser["user_id"].(string), &article)
-	if err != nil {
-		if _, ok := err.(util.ValidationError); ok {
-			respond.JSON(w, respond.Map{
-				"detail": err.Error(),
-			}, http.StatusBadRequest)
-			return
-		} else if strings.Contains(err.Error(), "FOREIGN KEY") {
-			respond.JSON(w, respond.Map{
-				"detail": "The provided user_id or category_id is invalid",
-			}, http.StatusBadRequest)
-			return
-		}
-		respond.JSON(w, respond.Map{
-			"detail": "An error occurred while registering the article",
-		}, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Location", fmt.Sprintf("/api/article/%s", article.ID))
-	respond.JSON(w, respond.Map{
-		"message":    "Article inserted successfully",
-		"article_id": article.ID,
-	}, http.StatusCreated)
-}
-
-func (h *ApiArticleHandler) GetArticleByID(w http.ResponseWriter, r *http.Request) {
+func (h *ApiArticleHandler) GetArticleBySha(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -90,13 +32,14 @@ func (h *ApiArticleHandler) GetArticleByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	id := r.PathValue("id")
+	category := r.PathValue("category")
+	name := r.PathValue("name")
 
-	article, err := h.service.GetArticleByID(id)
+	articles, err := h.service.GetArticleBySha(category, name)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{
-				"detail": "No results found",
+				"detail": "Content not found",
 			}, http.StatusNotFound)
 			return
 		}
@@ -105,37 +48,17 @@ func (h *ApiArticleHandler) GetArticleByID(w http.ResponseWriter, r *http.Reques
 		}, http.StatusInternalServerError)
 		return
 	}
+	defer articles.Close()
 
-	respond.JSON(w, article, http.StatusOK)
-}
-
-func (h *ApiArticleHandler) GetRecentArticles(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet && r.Method != http.MethodHead {
-		respond.JSON(w, respond.Map{
-			"detail": "Method '" + r.Method + "' not allowed",
-		}, http.StatusMethodNotAllowed)
-		return
-	}
-
-	category := r.URL.Query().Get("category")
-
-	articles, err := h.service.GetRecentArticles(category)
-	if err != nil {
+	if _, err := io.Copy(w, articles); err != nil {
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
-		return
 	}
-
-	count := strconv.Itoa(len(articles))
-	response := model.ArticleResponse{
-		Count: count,
-		Data:  articles,
-	}
-	respond.JSON(w, response, http.StatusOK)
 }
 
 func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -143,26 +66,40 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	category := r.URL.Query().Get("category")
-	title := r.URL.Query().Get("search")
-	page := r.URL.Query().Get("page")
-	if len(page) == 0 {
-		page = "1"
+	category := r.PathValue("category")
+
+	if artc, ok := cache[category]; ok {
+		respond.JSON(w, respond.Map{
+			"articles": artc,
+		}, http.StatusOK)
+		return
 	}
 
-	articles, err := h.service.GetArticles(category, title, page)
+	articles, err := h.service.GetArticles(category)
 	if err != nil {
+		if strings.Contains(err.Error(), "404") {
+			respond.JSON(w, respond.Map{
+				"detail": "Content not found",
+			}, http.StatusNotFound)
+			return
+		}
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 		return
 	}
+	cache[category] = articles
 
-	count := strconv.Itoa(len(articles))
 	response := model.ArticleResponse{
-		Page:  page,
-		Count: count,
-		Data:  articles,
+		Articles: articles,
 	}
 	respond.JSON(w, response, http.StatusOK)
+}
+
+func (h *ApiArticleHandler) EditArticle(w http.ResponseWriter, r *http.Request) {
+	category := r.PathValue("category")
+	name := r.PathValue("name")
+
+	url := h.service.EditArticle(category, name)
+	http.Redirect(w, r, url, http.StatusFound)
 }
