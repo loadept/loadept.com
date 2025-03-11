@@ -1,65 +1,54 @@
 package service
 
 import (
-	"log"
-	"strconv"
+	"encoding/json"
+	"fmt"
+	"net/http"
 
-	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
+	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/model"
-	"github.com/loadept/loadept.com/internal/repository"
-	"github.com/loadept/loadept.com/pkg/util"
 )
 
 type CategoryService struct {
-	repository *repository.CategoryRepository
-	validator  *validator.Validate
+	httpClient  *http.Client
+	baseURL     string
+	githubToken string
 }
 
-func NewCategoryService(repository *repository.CategoryRepository, validator *validator.Validate) *CategoryService {
+func NewCategoryService(httpClient *http.Client) *CategoryService {
 	return &CategoryService{
-		repository: repository,
-		validator:  validator,
+		httpClient:  httpClient,
+		baseURL:     config.Env.GITHUB_API,
+		githubToken: config.Env.GITHUB_TOKEN,
 	}
 }
 
-func (s *CategoryService) RegisterCategory(body *model.CategoryModel) error {
-	err := s.validator.Struct(body)
-	if err != nil {
-		return util.HandleValidationErrors(err)
-	}
+func (s *CategoryService) GetCategories() (*model.CategoryResponse, error) {
+	fullURL := fmt.Sprintf("%s/contents/metadata.json", s.baseURL)
 
-	id := uuid.New()
-	body.ID = id.String()
-
-	err = s.repository.RegisterCategory(body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *CategoryService) GetCategoryByID(id string) (*model.CategoryModel, error) {
-	category, err := s.repository.GetCategoryByID(id)
+	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return category, nil
-}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.githubToken))
+	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+	req.Header.Set("Accept", "application/vnd.github.raw+json")
 
-func (s *CategoryService) GetCategories(page string) ([]*model.CategoryModel, error) {
-	pageInt, err := strconv.Atoi(page)
+	resp, err := s.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
-	categories, err := s.repository.SelectCategories(6, pageInt)
-	if err != nil {
-		log.Println(err)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Error to request api: %d", resp.StatusCode)
+	}
+
+	var categories model.CategoryResponse
+	if err := json.NewDecoder(resp.Body).Decode(&categories); err != nil {
 		return nil, err
 	}
 
-	return categories, nil
+	return &categories, nil
 }
