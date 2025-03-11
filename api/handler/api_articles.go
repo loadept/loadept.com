@@ -20,11 +20,7 @@ func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 	}
 }
 
-// Pseudo cache
-var cache = make(map[string][]model.ArticleModel)
-
 func (h *ApiArticleHandler) GetArticleBySha(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -35,7 +31,7 @@ func (h *ApiArticleHandler) GetArticleBySha(w http.ResponseWriter, r *http.Reque
 	category := r.PathValue("category")
 	name := r.PathValue("name")
 
-	articles, err := h.service.GetArticleBySha(category, name)
+	articles, err := h.service.GetArticleByName(category, name)
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{
@@ -58,7 +54,6 @@ func (h *ApiArticleHandler) GetArticleBySha(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -67,13 +62,6 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 	}
 
 	category := r.PathValue("category")
-
-	if artc, ok := cache[category]; ok {
-		respond.JSON(w, respond.Map{
-			"articles": artc,
-		}, http.StatusOK)
-		return
-	}
 
 	articles, err := h.service.GetArticles(category)
 	if err != nil {
@@ -88,7 +76,6 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 		}, http.StatusInternalServerError)
 		return
 	}
-	cache[category] = articles
 
 	response := model.ArticleResponse{
 		Articles: articles,

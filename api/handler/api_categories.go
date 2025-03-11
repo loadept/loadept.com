@@ -18,8 +18,6 @@ func NewApiCategoryHandler(service *service.CategoryService) *ApiCategoriesHandl
 }
 
 func (h *ApiCategoriesHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
