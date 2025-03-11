@@ -18,11 +18,13 @@ package config
 //
 //	fmt.Println(Env.PORT)  // Prints the configured port or "8080" if not set.
 type config struct {
-	PORT         string `env:"PORT" default:"8080"`
-	DB_NAME      string `env:"DB_NAME" default:"db.sqlite"`
-	REDIS_URI    string `env:"REDIS_URI" default:""`
-	SECRET_KEY   string `env:"SECRET_KEY" default:""`
-	GITHUB_API   string `env:"GITHUB_API" default:""`
-	GITHUB_URL   string `env:"GITHUB_URL" default:""`
-	GITHUB_TOKEN string `env:"GITHUB_TOKEN" default:""`
+	PORT           string `env:"PORT" default:"8080"`
+	DB_NAME        string `env:"DB_NAME" default:"db.sqlite"`
+	REDIS_ADDR     string `env:"REDIS_ADDR" default:"localhost"`
+	REDIS_PORT     string `env:"REDIS_PORT" default:"6379"`
+	REDIS_PASSWORD string `env:"REDIS_PASSWORD" default:""`
+	SECRET_KEY     string `env:"SECRET_KEY" default:""`
+	GITHUB_API     string `env:"GITHUB_API" default:""`
+	GITHUB_URL     string `env:"GITHUB_URL" default:""`
+	GITHUB_TOKEN   string `env:"GITHUB_TOKEN" default:""`
 }

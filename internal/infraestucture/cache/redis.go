@@ -17,8 +17,9 @@ type cache struct {
 func (c *cache) Connect(ctx context.Context) error {
 	c.ctx = ctx
 
+	uri := fmt.Sprintf("%s:%s", config.Env.REDIS_ADDR, config.Env.REDIS_PORT)
 	options := &redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", config.Env.REDIS_ADDR, config.Env.REDIS_PORT),
+		Addr:     uri,
 		Password: config.Env.REDIS_PASSWORD,
 		DB:       0,
 		Protocol: 2,

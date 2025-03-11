@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -13,17 +14,17 @@ var (
 )
 
 type redisConnection interface {
-	Connect() error
+	Connect(context.Context) error
 	GetNow() (*time.Time, error)
 	GetClient() *redis.Client
 	Close() error
 }
 
-func NewRedisConnection() (redisConnection, error) {
+func NewRedisConnection(ctx context.Context) (redisConnection, error) {
 	var err error
 	once.Do(func() {
 		redisClient := &cache{}
-		if err = redisClient.Connect(); err == nil {
+		if err = redisClient.Connect(ctx); err == nil {
 			instance = redisClient
 		}
 	})
