@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/loadept/loadept.com/api"
 	"github.com/loadept/loadept.com/api/handler"
@@ -15,7 +16,6 @@ import (
 	"github.com/loadept/loadept.com/internal/infraestucture/cache"
 	"github.com/loadept/loadept.com/internal/infraestucture/database"
 	"github.com/loadept/loadept.com/internal/service"
-	"github.com/loadept/loadept.com/pkg/util"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -85,8 +85,13 @@ func main() {
 		mux.HandleFunc("/api/article/edit/{category}/{name}", handlerArticles.EditArticle)
 	}
 
+	debug, err := strconv.ParseBool(config.Env.DEBUG)
+	if err != nil {
+		log.Printf("Error to parse to bool: %v", err)
+	}
+
 	var muxWrapped http.Handler
-	if util.ParseBool(config.Env.DEBUG) {
+	if debug {
 		log.Println("You are in \033[33mdebug\033[0m mode, cors middleware will be used")
 		muxWrapped = middleware.CorsMiddleware(
 			middleware.LoggerMiddleware(mux),
