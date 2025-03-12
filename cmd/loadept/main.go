@@ -13,8 +13,8 @@ import (
 	"github.com/loadept/loadept.com/api/handler"
 	"github.com/loadept/loadept.com/api/middleware"
 	"github.com/loadept/loadept.com/internal/config"
-	"github.com/loadept/loadept.com/internal/infraestucture/cache"
-	"github.com/loadept/loadept.com/internal/infraestucture/database"
+	"github.com/loadept/loadept.com/internal/infrastructure/cache"
+	"github.com/loadept/loadept.com/internal/infrastructure/database"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/redis/go-redis/v9"
 )

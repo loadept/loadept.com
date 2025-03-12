@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/loadept/loadept.com/internal/config"
-	"github.com/loadept/loadept.com/internal/infraestucture/database"
+	"github.com/loadept/loadept.com/internal/infrastructure/database"
 )
 
 func main() {
