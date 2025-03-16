@@ -18,5 +18,5 @@ export const useContent = () => {
     getRaw()
   }, [content])
 
-  return { content, meta, params }
+  return { content, meta }
 }

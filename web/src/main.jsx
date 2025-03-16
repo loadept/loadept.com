@@ -7,18 +7,21 @@ import { Index } from './pages'
 import { About } from './pages/about'
 import { Article } from './pages/article'
 import './index.css'
+import { DataProvider } from './core/providers/context'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <Header />
-    <main className='flex-grow mt-12'>
-      <Routes>
-        <Route path='/' element={<Index />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/article/:category/:name' element={<Article />} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
-    </main>
-    <Footer />
+    <DataProvider>
+      <Header />
+      <main className='flex-grow mt-12'>
+        <Routes>
+          <Route path='/' element={<Index />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/article/:category/:name' element={<Article />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+    </DataProvider>
   </BrowserRouter>
 )

@@ -1,4 +1,4 @@
-export const FeedBackCard = ({ category, name }) => {
+export const FeedBackCard = ({ repo_url }) => {
   return (
     <div className='mt-20 border-t border-[#3e4451] pt-8'>
       <div className='bg-[#282c34] rounded-lg p-5'>
@@ -14,7 +14,7 @@ export const FeedBackCard = ({ category, name }) => {
 
         <div className='flex flex-wrap'>
           <a
-            href={`${API_URL}api/article/edit/${category}/${name}`}
+            href={repo_url}
             target='_blank'
             rel='noopener noreferrer'
             className='inline-flex items-center px-3 py-1 bg-[#21252b] text-[#61afef] rounded-md hover:bg-[#2c313a] transition-colors'

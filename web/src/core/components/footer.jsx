@@ -10,7 +10,7 @@ export const Footer = () => {
             <span className='text-[#c678dd]'>loadept</span> <span className='text-[#e06c75]'>-</span> {currentDate}
           </p>
           <a href='https://github.com/loadept/loadept.com' target='_blank' title='source' className='text-xs'>
-            <span className='text-[#e06c75] border-b'>Código fuente</span>
+            <span className='outline-none text-[#e06c75] border-b'>Código fuente</span>
           </a>
         </div>
       </div>

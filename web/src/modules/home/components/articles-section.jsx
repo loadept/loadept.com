@@ -1,7 +1,17 @@
-import { Link } from "react-router"
-import formatDate from "../../../core/utils/format-date"
+import formatDate from '../../../core/utils/format-date'
+import { useContext } from 'react'
+import { DataContext } from '../../../core/providers/context'
+import { useNavigate } from 'react-router'
 
 export const ArticlesSection = ({ articlesData, categoryData, activeCategory }) => {
+  const { setData } = useContext(DataContext)
+  const navigate = useNavigate()
+
+  const handleClick = (article, url) => {
+    setData(url)
+    navigate(`/article/${activeCategory}/${article}`)
+  }
+
   return (
     <>
       <div>
@@ -13,17 +23,18 @@ export const ArticlesSection = ({ articlesData, categoryData, activeCategory }) 
       <div className='space-y-4'>
         {articlesData.articles.length > 0 ? (
           articlesData.articles.map((article, k) => (
-            <Link
+            <button
               key={k}
-              className='group flex items-center justify-between py-2 transition-colors hover:bg-[#282c34] rounded-md px-3'
-              to={`/article/${activeCategory}/${article.name}`}
+              onClick={() => handleClick(article.name, article.html_url)}
+              className='w-full outline-none group flex items-center justify-between
+                        py-2 transition-colors hover:bg-[#282c34] rounded-md px-3'
             >
               <div className='flex items-center space-x-3'>
                 <div className={`h-2 w-2 rounded-full `} />
                 <span className='text-[#abb2bf] group-hover:text-[#e5c07b] transition-colors'>{article.name}</span>
               </div>
               <span className='text-sm text-wrap text-[#5c6370]'>Actualizado: {formatDate(article.updated_at, 'long')}</span>
-            </Link>
+            </button>
           ))
         ) : (
           <div className='text-center py-4 text-[#5c6370]'>No hay artículos en esta categoría</div>
