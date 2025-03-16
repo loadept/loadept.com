@@ -1,28 +1,25 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/model"
-	"github.com/redis/go-redis/v9"
+	"github.com/loadept/loadept.com/internal/repository/redis"
 )
 
 type CategoryService struct {
-	rdb         *redis.Client
-	ctx         context.Context
+	respository *redis.CategoryRepository
 	httpClient  *http.Client
 	baseURL     string
 	githubToken string
 }
 
-func NewCategoryService(httpClient *http.Client, rdb *redis.Client, ctx context.Context) *CategoryService {
+func NewCategoryService(httpClient *http.Client, repository *redis.CategoryRepository) *CategoryService {
 	return &CategoryService{
-		rdb:         rdb,
-		ctx:         ctx,
+		respository: repository,
 		httpClient:  httpClient,
 		baseURL:     config.Env.GITHUB_API,
 		githubToken: config.Env.GITHUB_TOKEN,
@@ -30,14 +27,9 @@ func NewCategoryService(httpClient *http.Client, rdb *redis.Client, ctx context.
 }
 
 func (s *CategoryService) GetCategories() (*model.CategoryResponse, error) {
-	{ // Get from redis if exists
-		cacheData, err := s.rdb.Get(s.ctx, "categories").Result()
-		if err == nil && cacheData != "" {
-			var categories model.CategoryResponse
-			if err := json.Unmarshal([]byte(cacheData), &categories); err == nil {
-				return &categories, nil
-			}
-		}
+	cacheCategory, err := s.respository.GetCategories()
+	if err == nil {
+		return cacheCategory, nil
 	}
 
 	fullURL := fmt.Sprintf("%s/contents/metadata.json", s.baseURL)
@@ -64,11 +56,9 @@ func (s *CategoryService) GetCategories() (*model.CategoryResponse, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&categories); err != nil {
 		return nil, err
 	}
-	{ // Store categories in cache
-		categoriesJSON, err := json.Marshal(categories)
-		if err == nil {
-			s.rdb.Set(s.ctx, "categories", categoriesJSON, 0)
-		}
+
+	if err := s.respository.StoreCategory(categories); err != nil {
+		return nil, err
 	}
 
 	return &categories, nil

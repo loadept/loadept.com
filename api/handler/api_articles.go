@@ -82,11 +82,3 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 	}
 	respond.JSON(w, response, http.StatusOK)
 }
-
-func (h *ApiArticleHandler) EditArticle(w http.ResponseWriter, r *http.Request) {
-	category := r.PathValue("category")
-	name := r.PathValue("name")
-
-	url := h.service.EditArticle(category, name)
-	http.Redirect(w, r, url, http.StatusFound)
-}

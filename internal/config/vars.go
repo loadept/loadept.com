@@ -26,6 +26,5 @@ type config struct {
 	REDIS_PASSWORD string `env:"REDIS_PASSWORD" default:""`
 	SECRET_KEY     string `env:"SECRET_KEY" default:""`
 	GITHUB_API     string `env:"GITHUB_API" default:""`
-	GITHUB_URL     string `env:"GITHUB_URL" default:""`
 	GITHUB_TOKEN   string `env:"GITHUB_TOKEN" default:""`
 }

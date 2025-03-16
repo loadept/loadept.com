@@ -15,6 +15,7 @@ import (
 	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/infrastructure/cache"
 	"github.com/loadept/loadept.com/internal/infrastructure/database"
+	repository "github.com/loadept/loadept.com/internal/repository/redis"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/redis/go-redis/v9"
 )
@@ -28,7 +29,7 @@ var (
 func init() {
 	config.LoadConfig()
 
-	{
+	{ // Sqlite connection
 		db, err := database.NewConnection()
 		if err != nil {
 			log.Println("Error to connect with database")
@@ -46,7 +47,7 @@ func init() {
 
 		conn = db.GetDB()
 	}
-	{
+	{ // Redis connection
 		redisClient, err := cache.NewRedisConnection(ctx)
 		if err != nil {
 			log.Println("Error to connect with redis:", err)
@@ -70,19 +71,21 @@ func main() {
 	mux := http.NewServeMux()
 	httpClient := &http.Client{}
 
-	articleService := service.NewArticleService(httpClient, rdb, ctx)
-	handlerArticles := handler.NewArticlesHandler(articleService)
+	categoryRepository := repository.NewCategoryRepository(rdb, ctx)
+	articleRepository := repository.NewArticleRepository(rdb, ctx)
 
-	categoryService := service.NewCategoryService(httpClient, rdb, ctx)
+	articleService := service.NewArticleService(httpClient, articleRepository)
+	articleHandler := handler.NewArticlesHandler(articleService)
+
+	categoryService := service.NewCategoryService(httpClient, categoryRepository)
 	categoryHandler := handler.NewApiCategoryHandler(categoryService)
 
 	{
 		mux.Handle("/", middleware.GzipEncoding(api.ServeSPA("web/dist", "index.html")))
 
 		mux.HandleFunc("/api/category", categoryHandler.GetCategories)
-		mux.HandleFunc("/api/article/{category}", handlerArticles.GetArticles)
-		mux.HandleFunc("/api/article/{category}/{name}", handlerArticles.GetArticleBySha)
-		mux.HandleFunc("/api/article/edit/{category}/{name}", handlerArticles.EditArticle)
+		mux.HandleFunc("/api/article/{category}", articleHandler.GetArticles)
+		mux.HandleFunc("/api/article/{category}/{name}", articleHandler.GetArticleBySha)
 	}
 
 	debug, err := strconv.ParseBool(config.Env.DEBUG)

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,25 +11,21 @@ import (
 
 	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/model"
-	"github.com/redis/go-redis/v9"
+	"github.com/loadept/loadept.com/internal/repository/redis"
 )
 
 type ArticleService struct {
-	rdb         *redis.Client
-	ctx         context.Context
+	repository  *redis.ArticleRepository
 	httpClient  *http.Client
 	baseURL     string
-	githubURL   string
 	githubToken string
 }
 
-func NewArticleService(httpClient *http.Client, rdb *redis.Client, ctx context.Context) *ArticleService {
+func NewArticleService(httpClient *http.Client, repository *redis.ArticleRepository) *ArticleService {
 	return &ArticleService{
-		rdb:         rdb,
-		ctx:         ctx,
+		repository:  repository,
 		httpClient:  httpClient,
 		baseURL:     config.Env.GITHUB_API,
-		githubURL:   config.Env.GITHUB_URL,
 		githubToken: config.Env.GITHUB_TOKEN,
 	}
 }
@@ -62,19 +57,9 @@ func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser,
 }
 
 func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, error) {
-	key := fmt.Sprintf("category:%s:articles", category)
-	{ // Get from cache if exists
-		cacheData, err := s.rdb.LRange(s.ctx, key, 0, -1).Result()
-		if err == nil && len(cacheData) > 0 {
-			var articles []model.ArticleModel
-			for _, articleString := range cacheData {
-				var article model.ArticleModel
-				if err := json.Unmarshal([]byte(articleString), &article); err == nil {
-					articles = append(articles, article)
-				}
-			}
-			return articles, nil
-		}
+	cacheArticles, err := s.repository.GetArticleByCategory(category)
+	if err == nil && len(cacheArticles) > 0 {
+		return cacheArticles, nil
 	}
 
 	endPoint := fmt.Sprintf("articles/%s", category)
@@ -99,10 +84,11 @@ func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, err
 	}
 
 	var files []struct {
-		Name string `json:"name"`
-		Path string `json:"path"`
-		SHA  string `json:"sha"`
-		Type string `json:"type"`
+		Name    string `json:"name"`
+		Path    string `json:"path"`
+		SHA     string `json:"sha"`
+		HtmlURL string `json:"html_url,omitempty"`
+		Type    string `json:"type"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&files); err != nil {
@@ -117,9 +103,10 @@ func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, err
 		}
 
 		article := model.ArticleModel{
-			Sha:  file.SHA,
-			Name: file.Name,
-			Path: file.Path,
+			Sha:     file.SHA,
+			Name:    file.Name,
+			Path:    file.Path,
+			HtmlURL: file.HtmlURL,
 		}
 
 		fullCommitURL := fmt.Sprintf("%s/commits?path=%s&page=1&per_page=1", s.baseURL, url.PathEscape(file.Path))
@@ -159,24 +146,10 @@ func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, err
 			articles[i].UpdatedAt = commits[0].Commit.Committer.Date
 		}
 	}
-	{ // Store articles in cache
-		pipe := s.rdb.Pipeline()
-		for _, article := range articles {
-			articleJSON, err := json.Marshal(article)
-			if err == nil {
-				pipe.RPush(s.ctx, key, articleJSON)
-			}
-		}
-		pipe.Exec(s.ctx)
+
+	if err := s.repository.StoreArticles(category, articles); err != nil {
+		return nil, err
 	}
 
 	return articles, nil
-}
-
-func (s *ArticleService) EditArticle(category, name string) string {
-	endPoint := fmt.Sprintf("%s/%s", category, name)
-	endPoint = url.PathEscape(endPoint)
-
-	editURL := fmt.Sprintf("%s/blob/main/articles/%s.md", s.githubURL, endPoint)
-	return editURL
 }
