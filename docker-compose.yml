@@ -20,6 +20,8 @@ services:
 
       - GITHUB_API=${GITHUB_API}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
+    depends_on:
+      - cache
 
   proxy:
     container_name: proxy
