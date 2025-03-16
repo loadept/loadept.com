@@ -1,10 +1,28 @@
 services:
   cache:
-    container_name: redis.loadept
+    container_name: cache
     image: redis:8.0-M03-alpine
 
+  web:
+    container_name: web
+    build: .
+    env_file: .env
+    environment:
+      - TZ=America/Lima
+
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - PORT=${PORT}
+      - DB_NAME=${DB_NAME}
+      - REDIS_ADDR=cache
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+      - GITHUB_API=${GITHUB_API}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+
   proxy:
-    container_name: proxy.loadept
+    container_name: proxy
     image: nginx:alpine-slim
     env_file: .env
     environment:
@@ -17,24 +35,4 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - com
-
-  com:
-    container_name: com.loadept
-    build: .
-    env_file: .env
-    environment:
-      - TZ=America/Lima
-
-      - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
-      - PORT=${PORT}
-      - DB_NAME=${DB_NAME}
-      - REDIS_ADDR=${REDIS_ADDR}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-
-      - GITHUB_API=${GITHUB_API}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-    ports:
-      - 8080:8080
+      - web
