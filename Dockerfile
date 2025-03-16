@@ -3,15 +3,18 @@ FROM node:22-alpine3.21 AS build-static
 
 WORKDIR /app
 
+RUN npm i -g pnpm
+
 ENV API_URL=/
+ENV CI=true
 
-COPY web/package.json web/package-lock.json ./
+COPY web/package.json web/pnpm-lock.yaml ./
 
-RUN npm ci
+RUN pnpm i
 
 COPY web .
 
-RUN npm run build
+RUN pnpm run build
 
 # Build go server
 FROM golang:1.24.0-alpine3.21 AS build
