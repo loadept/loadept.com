@@ -5,8 +5,8 @@ import { Description } from '../modules/about/components/description'
 
 export const About = () => {
   return (
-    <div className="container mx-auto px-4 max-w-3xl mb-20">
-      <div className="space-y-16">
+    <div className='container mx-auto px-4 max-w-3xl mb-20'>
+      <div className='space-y-16'>
         <Description />
         <Experience />
         <Interests />
