@@ -81,7 +81,7 @@ func main() {
 	categoryHandler := handler.NewApiCategoryHandler(categoryService)
 
 	{
-		mux.Handle("/", middleware.GzipEncoding(api.ServeSPA("web/dist", "index.html")))
+		mux.Handle("/", middleware.BrotliEncorder(api.ServeSPA("web/dist", "index.html")))
 
 		mux.HandleFunc("/api/category", categoryHandler.GetCategories)
 		mux.HandleFunc("/api/article/{category}", articleHandler.GetArticles)
