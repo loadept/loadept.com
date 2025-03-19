@@ -1,6 +1,6 @@
 import formatDate from '../../../core/utils/format-date'
 import { useContext } from 'react'
-import { DataContext } from '../../../core/providers/context'
+import { DataContext } from '../../../core/providers/dataContext'
 import { useNavigate } from 'react-router'
 
 export const ArticlesSection = ({ articlesData, categoryData, activeCategory }) => {

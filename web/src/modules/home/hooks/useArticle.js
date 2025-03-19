@@ -4,13 +4,14 @@ import { fetchArticle } from '../actions/fethArticle'
 export const useArticle = (activeCategory) => {
   const [articlesData, setArticlesData] = useState({ articles: [] })
 
+  const getArticles = async () => {
+    const articles = await fetchArticle(activeCategory)
+    setArticlesData(articles)
+  }
+
   useEffect(() => {
     if (!activeCategory) return
 
-    const getArticles = async () => {
-      const articles = await fetchArticle(activeCategory)
-      setArticlesData(articles)
-    }
     getArticles()
   }, [activeCategory])
 

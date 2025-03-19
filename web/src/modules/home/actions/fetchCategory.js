@@ -1,12 +1,11 @@
+import { apiClient } from '../../../core/utils/apiClient'
+
 export const fetchCategorie = async () => {
   try {
-    const req = await fetch(`${API_URL}api/category`)
-    if (req.status != 200) {
-      throw new Error('Error to obtain data')
-    }
+    const res = await apiClient.get(`api/category`)
 
-    return req.json()
+    return res.data
   } catch (err) {
-    console.error(err)
+    console.error(err.response.data)
   }
 }

@@ -1,11 +1,10 @@
+import { apiClient } from "../../../core/utils/apiClient"
+
 export const fetchArticle = async (articleName) => {
   try {
-    const req = await fetch(`${API_URL}api/article/${encodeURIComponent(articleName)}`)
-    if (req.status != 200) {
-      throw new Error('Error to obtain data')
-    }
+    const res = await apiClient.get(`api/article/${encodeURIComponent(articleName)}`)
 
-    const jsonData = await req.json()
+    const jsonData = await res.data
     const processData = {
       ...jsonData,
       articles: jsonData.articles.map(artl => ({
@@ -17,6 +16,6 @@ export const fetchArticle = async (articleName) => {
 
     return processData
   } catch (err) {
-    console.error('Error to load articles:', err)
+    console.error(err.response.data)
   }
 }

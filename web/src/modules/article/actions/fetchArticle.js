@@ -1,13 +1,12 @@
+import { apiClient } from '../../../core/utils/apiClient'
+
 export const fetchArticle = async ({ category, name }) => {
   try {
-    const req = await fetch(`${API_URL}api/article/${category}/${name}`)
-    if (req.status != 200) {
-      throw new Error('Error to obtain data')
-    }
+    const res = await apiClient.get(`api/article/${category}/${name}`)
 
-    return req.text()
+    return res.data
   } catch (err) {
-    console.error(err)
+    console.error(err.response.data)
     return ''
   }
 } 

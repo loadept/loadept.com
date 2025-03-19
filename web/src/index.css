@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: 'FiraCode';
-  src: url('./assets/font/FiraCode.ttf') format('truetype');
+  src: url('./assets/font/FiraCode.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;

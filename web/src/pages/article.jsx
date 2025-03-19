@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { BackArrow } from '../modules/article/components/back-arrow'
 import { MainContent } from '../modules/article/components/main-content'
 import { useContent } from '../modules/article/hooks/useContent'
-import { DataContext } from '../core/providers/context'
+import { DataContext } from '../core/providers/dataContext'
 
 export const Article = () => {
   const { content, meta } = useContent()

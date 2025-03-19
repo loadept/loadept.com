@@ -23,7 +23,7 @@ export const NotFound = () => {
 
         <div className='pt-6 hover:text-[#528bff]'>
           <Link
-            href='/'
+            to='/'
             className='inline-flex items-center gap-2 text-lg text-[#61afef] transition-colors animate-pulse'
             title='home'
           >
