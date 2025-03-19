@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"compress/gzip"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -11,7 +12,7 @@ import (
 // becoming a custom ResponseWriter.
 type gzipResponseWriter struct {
 	http.ResponseWriter
-	Writer *gzip.Writer
+	Writer io.Writer
 }
 
 // Write overrides the write method by changing the default writer to the gzip writer.
