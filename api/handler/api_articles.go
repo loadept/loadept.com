@@ -20,7 +20,7 @@ func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 	}
 }
 
-func (h *ApiArticleHandler) GetArticleBySha(w http.ResponseWriter, r *http.Request) {
+func (h *ApiArticleHandler) GetArticleByName(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",

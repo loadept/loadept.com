@@ -85,7 +85,7 @@ func main() {
 
 		mux.HandleFunc("/api/category", categoryHandler.GetCategories)
 		mux.HandleFunc("/api/article/{category}", articleHandler.GetArticles)
-		mux.HandleFunc("/api/article/{category}/{name}", articleHandler.GetArticleBySha)
+		mux.HandleFunc("/api/article/{category}/{name}", articleHandler.GetArticleByName)
 	}
 
 	debug, err := strconv.ParseBool(config.Env.DEBUG)
