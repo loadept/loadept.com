@@ -32,8 +32,8 @@ func NewArticleService(httpClient *http.Client, repository *redis.ArticleReposit
 	}
 }
 
-func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser, error) {
-	cacheArticle, err := s.repository.GetArticle(name)
+func (s *ArticleService) GetRawArticleByName(category, name string) (io.ReadCloser, error) {
+	cacheArticle, err := s.repository.GetRawArticle(name)
 	if err == nil && len(cacheArticle) > 0 {
 		reader := strings.NewReader(cacheArticle)
 		return io.NopCloser(reader), nil
@@ -71,7 +71,7 @@ func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser,
 		}
 		builder.Write(buffer[:n])
 	}
-	if err := s.repository.StoreArticle(name, builder.String()); err != nil {
+	if err := s.repository.StoreRawArticle(name, builder.String()); err != nil {
 		return nil, err
 	}
 
@@ -79,8 +79,8 @@ func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser,
 	return io.NopCloser(newBody), nil
 }
 
-func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, error) {
-	cacheArticles, err := s.repository.GetArticleByCategory(category)
+func (s *ArticleService) GetListArticles(category string) ([]model.ArticleModel, error) {
+	cacheArticles, err := s.repository.GetListArticleByCategory(category)
 	if err == nil && len(cacheArticles) > 0 {
 		return cacheArticles, nil
 	}
@@ -170,7 +170,7 @@ func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, err
 		}
 	}
 
-	if err := s.repository.StoreArticles(category, articles); err != nil {
+	if err := s.repository.StoreListArticles(category, articles); err != nil {
 		return nil, err
 	}
 

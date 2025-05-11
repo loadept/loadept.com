@@ -20,7 +20,7 @@ func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 	}
 }
 
-func (h *ApiArticleHandler) GetArticleByName(w http.ResponseWriter, r *http.Request) {
+func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -31,7 +31,7 @@ func (h *ApiArticleHandler) GetArticleByName(w http.ResponseWriter, r *http.Requ
 	category := r.PathValue("category")
 	name := r.PathValue("name")
 
-	articles, err := h.service.GetArticleByName(category, name)
+	articles, err := h.service.GetRawArticleByName(category, name)
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{
@@ -53,7 +53,7 @@ func (h *ApiArticleHandler) GetArticleByName(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
+func (h *ApiArticleHandler) GetListArticles(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodHead {
 		respond.JSON(w, respond.Map{
 			"detail": "Method '" + r.Method + "' not allowed",
@@ -63,7 +63,7 @@ func (h *ApiArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) 
 
 	category := r.PathValue("category")
 
-	articles, err := h.service.GetArticles(category)
+	articles, err := h.service.GetListArticles(category)
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{

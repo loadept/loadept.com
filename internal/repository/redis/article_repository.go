@@ -21,7 +21,7 @@ func NewArticleRepository(rdb *redis.Client, ctx context.Context) *ArticleReposi
 	}
 }
 
-func (a *ArticleRepository) GetArticle(articleName string) (string, error) {
+func (a *ArticleRepository) GetRawArticle(articleName string) (string, error) {
 	key := fmt.Sprintf("article:%s", articleName)
 
 	cacheData, err := a.rdb.Get(a.ctx, key).Result()
@@ -32,7 +32,7 @@ func (a *ArticleRepository) GetArticle(articleName string) (string, error) {
 	return "", fmt.Errorf("No results found")
 }
 
-func (a *ArticleRepository) StoreArticle(articleName string, data string) error {
+func (a *ArticleRepository) StoreRawArticle(articleName string, data string) error {
 	key := fmt.Sprintf("article:%s", articleName)
 
 	if err := a.rdb.Set(a.ctx, key, data, 0).Err(); err != nil {
@@ -42,7 +42,7 @@ func (a *ArticleRepository) StoreArticle(articleName string, data string) error 
 	return nil
 }
 
-func (a *ArticleRepository) GetArticleByCategory(category string) ([]model.ArticleModel, error) {
+func (a *ArticleRepository) GetListArticleByCategory(category string) ([]model.ArticleModel, error) {
 	key := fmt.Sprintf("category:%s:articles", category)
 
 	cacheData, err := a.rdb.LRange(a.ctx, key, 0, -1).Result()
@@ -62,7 +62,7 @@ func (a *ArticleRepository) GetArticleByCategory(category string) ([]model.Artic
 	return nil, fmt.Errorf("No results found")
 }
 
-func (a *ArticleRepository) StoreArticles(category string, articles []model.ArticleModel) error {
+func (a *ArticleRepository) StoreListArticles(category string, articles []model.ArticleModel) error {
 	key := fmt.Sprintf("category:%s:articles", category)
 
 	pipe := a.rdb.Pipeline()
