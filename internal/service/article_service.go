@@ -1,6 +1,8 @@
 package service
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,6 +33,12 @@ func NewArticleService(httpClient *http.Client, repository *redis.ArticleReposit
 }
 
 func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser, error) {
+	cacheArticle, err := s.repository.GetArticle(name)
+	if err == nil && len(cacheArticle) > 0 {
+		reader := strings.NewReader(cacheArticle)
+		return io.NopCloser(reader), nil
+	}
+
 	endPoint := fmt.Sprintf("contents/articles/%s/%s.md", category, name)
 	fullURL := fmt.Sprintf("%s/%s", s.baseURL, endPoint)
 
@@ -53,7 +61,22 @@ func (s *ArticleService) GetArticleByName(category, name string) (io.ReadCloser,
 		return nil, fmt.Errorf("Error to request api: %d", resp.StatusCode)
 	}
 
-	return resp.Body, nil
+	reader := bufio.NewReader(resp.Body)
+	var builder strings.Builder
+	buffer := make([]byte, 4096)
+	for {
+		n, err := reader.Read(buffer)
+		if err != nil {
+			break
+		}
+		builder.Write(buffer[:n])
+	}
+	if err := s.repository.StoreArticle(name, builder.String()); err != nil {
+		return nil, err
+	}
+
+	newBody := bytes.NewReader(buffer)
+	return io.NopCloser(newBody), nil
 }
 
 func (s *ArticleService) GetArticles(category string) ([]model.ArticleModel, error) {

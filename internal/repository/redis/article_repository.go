@@ -21,6 +21,27 @@ func NewArticleRepository(rdb *redis.Client, ctx context.Context) *ArticleReposi
 	}
 }
 
+func (a *ArticleRepository) GetArticle(articleName string) (string, error) {
+	key := fmt.Sprintf("article:%s", articleName)
+
+	cacheData, err := a.rdb.Get(a.ctx, key).Result()
+	if err == nil && cacheData != "" {
+		return cacheData, nil
+	}
+
+	return "", fmt.Errorf("No results found")
+}
+
+func (a *ArticleRepository) StoreArticle(articleName string, data string) error {
+	key := fmt.Sprintf("article:%s", articleName)
+
+	if err := a.rdb.Set(a.ctx, key, data, 0).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a *ArticleRepository) GetArticleByCategory(category string) ([]model.ArticleModel, error) {
 	key := fmt.Sprintf("category:%s:articles", category)
 
