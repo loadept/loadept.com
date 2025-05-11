@@ -24,10 +24,7 @@ jobs:
       - name: Start unit testing
         run: |
           testable_paths=$(go list ./... | grep -v "test/") 
-          go test -v $testable_paths | sed -E \
-            's/.*PASS.*/\x1b[32m&\x1b[0m/g;
-             s/^ok.*/\x1b[32m&\x1b[0m/g;
-             s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
+          go test -v $testable_paths
 
   Integration-Testing:
     runs-on: ubuntu-24.04
@@ -50,7 +47,4 @@ jobs:
 
       - name: Start integration testing
         run: |
-          go test -v ./test/... | sed -E \
-            's/.*PASS.*/\x1b[32m&\x1b[0m/g;
-             s/^ok.*/\x1b[32m&\x1b[0m/g;
-             s/.*FAIL: .*/\x1b[31m&\x1b[0m/g'
+          go test -v ./test/...
