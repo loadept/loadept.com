@@ -2,6 +2,7 @@
 *.db
 *sqlite
 *sqlite3
+redis.conf
 
 # Logs
 logs
