@@ -8,7 +8,7 @@ export const MainContent = ({ content, meta, repo_url }) => {
   return (
     <>
       {
-        content ?
+        (meta.title && content) ?
           <>
             < article className='prose prose-invert prose-headings:text-[#e5c07b] prose-a:text-[#61afef] max-w-none' >
               <h1 className='text-5xl font-bold text-[#e5c07b] mb-4'>{meta.title.toUpperCase()}</h1>
