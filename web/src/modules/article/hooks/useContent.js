@@ -1,19 +1,18 @@
-import { useParams } from 'react-router'
-import { useEffect, useState } from 'react'
+// import { useParams } from 'react-router'
+import { useEffect, useState } from 'preact/hooks'
 import fm from 'front-matter'
 import { fetchArticle } from '../actions/fetchArticle'
-import { useNavigate } from 'react-router'
+import { route } from 'preact-router'
 
-export const useContent = () => {
-  const params = useParams()
+export const useContent = (params) => {
+  // const params = useParams()
   const [content, setContent] = useState('')
   const [meta, setMeta] = useState({})
-  const navigate = useNavigate()
 
   const getRaw = async () => {
     const rawMd = await fetchArticle(params)
     if (rawMd.length === 0) {
-      navigate('/404')
+      route('/404')
       return
     }
 
@@ -24,7 +23,7 @@ export const useContent = () => {
 
   useEffect(() => {
     getRaw()
-  }, [content, params, navigate])
+  }, [content])
 
   return { content, meta }
 }

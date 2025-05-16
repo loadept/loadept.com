@@ -1,15 +1,14 @@
 import formatDate from '../../../core/utils/format-date'
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { DataContext } from '../../../core/providers/dataContext'
-import { useNavigate } from 'react-router'
+import { route } from 'preact-router'
 
 export const ArticlesSection = ({ articlesData, categoryData, activeCategory }) => {
   const { setData } = useContext(DataContext)
-  const navigate = useNavigate()
 
   const handleClick = (article, url) => {
     setData(url)
-    navigate(`/article/${activeCategory}/${article}`)
+    route(`/article/${activeCategory}/${article}`)
   }
 
   return (

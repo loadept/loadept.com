@@ -1,4 +1,3 @@
-
 export const Footer = () => {
   const currentDate = new Date().getFullYear()
 

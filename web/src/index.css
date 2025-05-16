@@ -2,15 +2,15 @@
 @plugin "@tailwindcss/typography";
 
 @font-face {
-  font-family: 'FiraCode';
-  src: url('./assets/font/FiraCode.woff2') format('woff2');
+  font-family: 'firacode';
+  src: url('./assets/font/firacode.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  font-family: 'FiraCode', sans-serif;
+  font-family: 'firacode', sans-serif;
   font-variant-ligatures: normal;
   font-weight: 300;
   background-color: #1f2329;

@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link } from 'preact-router/match'
 
 export const NotFound = () => {
   return (

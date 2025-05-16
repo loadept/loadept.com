@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'preact/hooks'
 import { fetchArticle } from '../actions/fethArticle'
 
 export const useArticle = (activeCategory) => {

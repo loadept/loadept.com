@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'preact/hooks';
 import { DataContext } from './dataContext';
 
 export const DataProvider = ({ children }) => {

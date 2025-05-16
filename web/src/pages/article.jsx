@@ -1,11 +1,11 @@
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { BackArrow } from '../modules/article/components/back-arrow'
 import { MainContent } from '../modules/article/components/main-content'
 import { useContent } from '../modules/article/hooks/useContent'
 import { DataContext } from '../core/providers/dataContext'
 
-export const Article = () => {
-  const { content, meta } = useContent()
+export const Article = ({ category, name }) => {
+  const { content, meta } = useContent({ category, name })
   const { data } = useContext(DataContext)
 
   return (

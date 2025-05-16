@@ -1,3 +1,3 @@
-import { createContext } from 'react';
+import { createContext } from 'preact'
 
 export const DataContext = createContext()
