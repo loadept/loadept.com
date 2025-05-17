@@ -1,5 +1,5 @@
 # Building static files
-FROM node:22-alpine3.21 AS build-static
+FROM docker.io/node:22-alpine3.21 AS build-static
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY web .
 RUN pnpm run build
 
 # Build go server
-FROM golang:1.24.0-alpine3.21 AS build
+FROM docker.io/golang:1.24.0-alpine3.21 AS build
 
 ENV CGO_ENABLED=1
 
@@ -34,7 +34,7 @@ COPY . .
 RUN go build -v -x -o loadept.com cmd/loadept/main.go
 
 # Execution stage
-FROM alpine:3.21
+FROM docker.io/alpine:3.21
 
 RUN apk add --no-cache tzdata
 

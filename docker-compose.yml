@@ -1,31 +1,26 @@
 services:
   cache:
     container_name: cache
-    image: redis:8.0-M03-alpine
+    image: docker.io/redis:8.0-M03-alpine
+    volumes:
+      - ./configs/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${CERT_PATH}:/certs/redis.crt
+      - ${CERT_KEY_PATH}:/certs/redis.key
+      - ${CA_CERT_PATH}:/certs/ca.crt
+    command: 'redis-server /usr/local/etc/redis/redis.conf'
 
   web:
     container_name: web
     build: .
+    restart: always
     env_file: .env
     environment:
       - TZ=America/Lima
 
-      - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
-      - PORT=${PORT}
-      - DB_NAME=${DB_NAME}
-      - REDIS_ADDR=cache
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-
-      - GITHUB_API=${GITHUB_API}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-    depends_on:
-      - cache
-
   proxy:
     container_name: proxy
-    image: nginx:alpine-slim
+    image: docker.io/nginx:alpine-slim
+    restart: always
     env_file: .env
     environment:
       - TZ=America/Lima
