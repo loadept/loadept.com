@@ -31,7 +31,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -v -x -o loadept.com cmd/loadept/main.go
+RUN go build -o loadept.com cmd/loadept/main.go
 
 # Execution stage
 FROM docker.io/alpine:3.21
