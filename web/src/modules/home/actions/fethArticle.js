@@ -2,7 +2,7 @@ import { apiClient } from "../../../core/utils/apiClient"
 
 export const fetchArticle = async (articleName) => {
   try {
-    const res = await apiClient.get(`api/article/${encodeURIComponent(articleName)}`)
+    const res = await apiClient.get(`api/articles/${encodeURIComponent(articleName)}`)
 
     const jsonData = await res.data
     const processData = {
