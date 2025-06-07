@@ -84,8 +84,8 @@ func main() {
 		mux.Handle("/", middleware.BrotliEncorder(api.ServeSPA("web/dist", "index.html")))
 
 		mux.HandleFunc("/api/categories", categoryHandler.GetCategories)
-		mux.HandleFunc("/api/article/{category}", articleHandler.GetListArticles)
-		mux.HandleFunc("/api/article/{category}/{name}", articleHandler.GetRawArticleByName)
+		mux.HandleFunc("/api/articles/{category}", articleHandler.GetListArticles)
+		mux.HandleFunc("/api/articles/{category}/{name}", articleHandler.GetRawArticleByName)
 	}
 
 	debug, err := strconv.ParseBool(config.Env.DEBUG)
