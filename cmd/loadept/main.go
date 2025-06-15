@@ -17,6 +17,7 @@ import (
 	"github.com/loadept/loadept.com/internal/infrastructure/database"
 	repository "github.com/loadept/loadept.com/internal/repository/redis"
 	"github.com/loadept/loadept.com/internal/service"
+	"github.com/loadept/loadept.com/pkg/logger"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -28,6 +29,7 @@ var (
 
 func init() {
 	config.LoadConfig()
+	logger.NewLogger()
 
 	{ // Sqlite connection
 		db, err := database.NewConnection()
@@ -68,6 +70,8 @@ func init() {
 }
 
 func main() {
+	defer logger.CloseLogger()
+
 	mux := http.NewServeMux()
 	httpClient := &http.Client{}
 

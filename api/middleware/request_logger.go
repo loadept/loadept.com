@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"time"
+
+	"github.com/loadept/loadept.com/pkg/logger"
 )
 
 // loggerResponseWriter is a structure that extends the ResponseWriter interface,
@@ -43,7 +44,7 @@ func LoggerMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(lwr, r)
 
 		elapsed := time.Since(start)
-		log.Printf("\033[33m-\033[0m %s %s: %s %s %s - %d %s\n",
+		logger.INFO.Printf("- %s %s: %s %s %s - %d %s\n",
 			forwardedProto, forwardedHost, forwardedIp,
 			method, requestedPath, lwr.statusCode, elapsed,
 		)
