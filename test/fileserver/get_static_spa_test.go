@@ -1,7 +1,6 @@
 package test
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -111,8 +110,6 @@ func TestServeSPA(t *testing.T) {
 		rr := httptest.NewRecorder()
 
 		handler.ServeHTTP(rr, req)
-
-		log.Println(rr.Body.String())
 
 		if rr.Code != http.StatusBadRequest {
 			t.Errorf("Expected status 200, got %d", rr.Code)
