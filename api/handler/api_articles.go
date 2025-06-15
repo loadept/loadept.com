@@ -15,7 +15,7 @@ type ApiArticleHandler struct {
 	service *service.ArticleService
 }
 
-func NewArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
+func NewApiArticlesHandler(service *service.ArticleService) *ApiArticleHandler {
 	return &ApiArticleHandler{
 		service: service,
 	}
@@ -39,14 +39,14 @@ func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.R
 				"detail": "Content not found",
 			}, http.StatusNotFound)
 
-			logger.ERROR.Printf("- An error occurred while retrieving article: %v\n", err)
+			logger.ERROR.Printf("An error occurred while retrieving article: %v\n", err)
 			return
 		}
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 
-		logger.ERROR.Printf("- An error occurred while retrieving article: %v\n", err)
+		logger.ERROR.Printf("An error occurred while retrieving article: %v\n", err)
 		return
 	}
 	defer articles.Close()
@@ -56,7 +56,7 @@ func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.R
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 
-		logger.ERROR.Printf("- An error occurred while generating a response: %v\n", err)
+		logger.ERROR.Printf("An error occurred while generating a response: %v\n", err)
 	}
 }
 
@@ -77,14 +77,14 @@ func (h *ApiArticleHandler) GetListArticles(w http.ResponseWriter, r *http.Reque
 				"detail": "Content not found",
 			}, http.StatusNotFound)
 
-			logger.ERROR.Printf("- An error occurred while listing articles: %v\n", err)
+			logger.ERROR.Printf("An error occurred while listing articles: %v\n", err)
 			return
 		}
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 
-		logger.ERROR.Printf("- An error occurred while listing articles: %v\n", err)
+		logger.ERROR.Printf("An error occurred while listing articles: %v\n", err)
 		return
 	}
 

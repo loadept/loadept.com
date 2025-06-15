@@ -32,7 +32,7 @@ func (h *ApiCategoriesHandler) GetCategories(w http.ResponseWriter, r *http.Requ
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
 
-		logger.ERROR.Printf("- An error occurred while retrieving categories: %v\n", err)
+		logger.ERROR.Printf("An error occurred while retrieving categories: %v\n", err)
 		return
 	}
 

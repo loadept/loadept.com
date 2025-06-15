@@ -44,7 +44,7 @@ func LoggerMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(lwr, r)
 
 		elapsed := time.Since(start)
-		logger.INFO.Printf("- %s %s: %s %s %s - %d %s\n",
+		logger.INFO.Printf("%s %s: %s %s %s - %d %s\n",
 			forwardedProto, forwardedHost, forwardedIp,
 			method, requestedPath, lwr.statusCode, elapsed,
 		)
