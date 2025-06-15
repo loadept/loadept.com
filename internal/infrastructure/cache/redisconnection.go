@@ -10,7 +10,7 @@ import (
 
 var (
 	instance redisConnection
-	once sync.Once
+	once     sync.Once
 )
 
 type redisConnection interface {

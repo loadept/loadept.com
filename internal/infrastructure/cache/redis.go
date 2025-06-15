@@ -1,10 +1,7 @@
 package cache
 
 import (
-	"crypto/tls"
 	"fmt"
-	"log"
-	"strconv"
 	"time"
 
 	"github.com/loadept/loadept.com/internal/config"
@@ -20,7 +17,15 @@ type cache struct {
 func (c *cache) Connect(ctx context.Context) error {
 	c.ctx = ctx
 
-	redisURL := fmt.Sprintf("rediss://%s:%s@%s:%s",
+	var redisScheme string
+	if config.Env.REDIS_TLS_INSECURE == "true" {
+		redisScheme = "redis"
+	} else {
+		redisScheme = "rediss"
+	}
+
+	redisURL := fmt.Sprintf("%s://%s:%s@%s:%s",
+		redisScheme,
 		config.Env.REDIS_USER,
 		config.Env.REDIS_PASSWORD,
 		config.Env.REDIS_HOST,
@@ -30,15 +35,6 @@ func (c *cache) Connect(ctx context.Context) error {
 	options, err := redis.ParseURL(redisURL)
 	if err != nil {
 		return err
-	}
-
-	redisTlsInsecure, err := strconv.ParseBool(config.Env.REDIS_TLS_INSECURE)
-	if err != nil {
-		log.Printf("Error to parse to bool: %v", err)
-	}
-
-	options.TLSConfig = &tls.Config{
-		InsecureSkipVerify: redisTlsInsecure,
 	}
 
 	client := redis.NewClient(options)
