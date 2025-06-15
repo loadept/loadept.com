@@ -3,10 +3,20 @@ package middleware
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
+
+	"github.com/loadept/loadept.com/pkg/logger"
 )
 
 func TestLoggerMiddleware(t *testing.T) {
+	err := os.MkdirAll("logs", os.ModePerm)
+	if err != nil {
+		t.Fatalf("No se pudo crear el directorio logs: %v", err)
+	}
+	defer os.RemoveAll("logs")
+	logger.NewLogger()
+
 	testHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
