@@ -27,11 +27,32 @@ jobs:
           go test -v $testable_paths
 
   Integration-Testing:
+    environment: testing
+
     runs-on: ubuntu-24.04
     needs:
       - Unit-Testing
     if: success()
 
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      REDIS_USER: ""
+      REDIS_PASSWORD: ""
+      REDIS_TLS_INSECURE: "false"
+      GITHUB_API: "${{ secrets.GB_API }}"
+      GITHUB_TOKEN: "${{ secrets.GB_TOKEN }}"
+  
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
