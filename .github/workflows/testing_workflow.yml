@@ -49,7 +49,7 @@ jobs:
       REDIS_PORT: 6379
       REDIS_USER: ""
       REDIS_PASSWORD: ""
-      REDIS_TLS_INSECURE: "false"
+      REDIS_TLS_INSECURE: "true"
       GITHUB_API: "${{ secrets.GB_API }}"
       GITHUB_TOKEN: "${{ secrets.GB_TOKEN }}"
   
