@@ -79,7 +79,7 @@ func main() {
 	articleRepository := repository.NewArticleRepository(rdb, ctx)
 
 	articleService := service.NewArticleService(httpClient, articleRepository)
-	articleHandler := handler.NewArticlesHandler(articleService)
+	articleHandler := handler.NewApiArticlesHandler(articleService)
 
 	categoryService := service.NewCategoryService(httpClient, categoryRepository)
 	categoryHandler := handler.NewApiCategoryHandler(categoryService)
