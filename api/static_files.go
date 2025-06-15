@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/loadept/loadept.com/pkg/logger"
 )
 
 // ServeDir defines a controller to serve static files from a directory.
@@ -30,6 +32,8 @@ func ServeSPA(staticDir, indexFile string) http.Handler {
 			return
 		} else if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+
+			logger.ERROR.Printf("- An error occurred while serving static files: %v\n", err)
 			return
 		}
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
+	"github.com/loadept/loadept.com/pkg/logger"
 	"github.com/loadept/loadept.com/pkg/respond"
 )
 
@@ -37,11 +38,15 @@ func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.R
 			respond.JSON(w, respond.Map{
 				"detail": "Content not found",
 			}, http.StatusNotFound)
+
+			logger.ERROR.Printf("- An error occurred while retrieving article: %v\n", err)
 			return
 		}
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
+
+		logger.ERROR.Printf("- An error occurred while retrieving article: %v\n", err)
 		return
 	}
 	defer articles.Close()
@@ -50,6 +55,8 @@ func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.R
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
+
+		logger.ERROR.Printf("- An error occurred while generating a response: %v\n", err)
 	}
 }
 
@@ -69,11 +76,15 @@ func (h *ApiArticleHandler) GetListArticles(w http.ResponseWriter, r *http.Reque
 			respond.JSON(w, respond.Map{
 				"detail": "Content not found",
 			}, http.StatusNotFound)
+
+			logger.ERROR.Printf("- An error occurred while listing articles: %v\n", err)
 			return
 		}
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",
 		}, http.StatusInternalServerError)
+
+		logger.ERROR.Printf("- An error occurred while listing articles: %v\n", err)
 		return
 	}
 
