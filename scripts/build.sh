@@ -11,6 +11,7 @@ if ! pnpm i; then
     exit 1
 fi
 
+export API_URL=/
 if ! pnpm run build; then
     echo "Build static failed"
     exit 1
