@@ -30,8 +30,8 @@ jobs:
 
       - name: Setup build script
         run: |
-          chmod 744 build.sh
-          ./build.sh
+          chmod 744 scripts/build.sh
+          scripts/build.sh
 
       - name: Upload articles to server via SCP
         env:
