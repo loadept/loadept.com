@@ -26,19 +26,18 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-      - run: corepack enable
 
       - name: Setup build script
         run: |
           chmod 744 scripts/build.sh
           scripts/build.sh
 
-      - name: Upload articles to server via SCP
+      - name: Upload to server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          echo $SSH_PRIVATE_KEY > private_key.pem
           chmod 600 private_key.pem
-          scp -i private_key.pem *.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
+          scp -i ./private_key.pem *.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
