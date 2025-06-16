@@ -6,6 +6,11 @@ APP_NAME=loadept-$(date +"%d-%m-%y").app
 DIR_NAME=loadept-$(date +"%d-%m-%y")
 
 pushd ./web > /dev/null
+if ! pnpm i; then
+    echo "Install dependencies failed"
+    exit 1
+fi
+
 if ! pnpm run build; then
     echo "Build static failed"
     exit 1
