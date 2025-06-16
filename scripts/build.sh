@@ -2,8 +2,8 @@
 
 export CGO_ENABLED=1
 
-APP_NAME=loadept-$(date +"%d-%m-%y").app
-DIR_NAME=loadept-$(date +"%d-%m-%y")
+APP_NAME=app
+DIR_NAME=loadept-web
 
 pushd ./web > /dev/null
 if ! pnpm i; then

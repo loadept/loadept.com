@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.0'
+      - run: go version
       
       - name: Setup Node
         uses: pnpm/action-setup@v2
