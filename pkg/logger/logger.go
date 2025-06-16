@@ -37,7 +37,7 @@ func NewLogger() {
 			panic(err)
 		}
 
-		infoLogger := log.New(infoLoggerFile, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+		infoLogger := log.New(infoLoggerFile, "INFO: ", log.Ldate|log.Ltime)
 		errorLogger := log.New(errorLoggerFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 
 		INFO = infoLogger
