@@ -52,7 +52,7 @@ jobs:
       REDIS_TLS_INSECURE: "true"
       GITHUB_API: "${{ secrets.GB_API }}"
       GITHUB_TOKEN: "${{ secrets.GB_TOKEN }}"
-  
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
