@@ -1,4 +1,4 @@
-name: Deploy proyect
+name: Deploy project
 
 on:
   workflow_run:
@@ -38,6 +38,6 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo $SSH_PRIVATE_KEY > private_key.pem
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           scp -o StrictHostKeyChecking=no -i ./private_key.pem *.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
