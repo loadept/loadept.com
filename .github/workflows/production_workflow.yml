@@ -42,3 +42,5 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           scp -o StrictHostKeyChecking=no -i ./private_key.pem *.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
+          ssh -i ./private_key.pem $SERVER_USER@$SERVER_IP tar -xzvf loadept-web.tar.gz
+          ssh -i ./private_key.pem $SERVER_USER@$SERVER_IP sudo systemctl restart loadept-web
