@@ -18,7 +18,7 @@ import (
 )
 
 func TestGetCategories(t *testing.T) {
-	config.LoadConfig()
+	config.LoadEnviron()
 
 	httpClient := &http.Client{}
 

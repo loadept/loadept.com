@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	config.LoadConfig()
+	config.LoadEnviron()
 
 	con, err := database.NewConnection()
 	if err != nil {

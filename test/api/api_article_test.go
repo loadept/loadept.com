@@ -26,7 +26,7 @@ func TestGetRawArticleByName(t *testing.T) {
 	assert.NoError(t, err, "Should be able to create the directory records")
 	defer os.RemoveAll("logs")
 
-	config.LoadConfig()
+	config.LoadEnviron()
 	logger.NewLogger()
 
 	httpClient := &http.Client{}
@@ -120,7 +120,7 @@ func TestGetRawArticleByName(t *testing.T) {
 }
 
 func TestGetListArticle(t *testing.T) {
-	config.LoadConfig()
+	config.LoadEnviron()
 
 	httpClient := &http.Client{}
 
@@ -139,6 +139,10 @@ func TestGetListArticle(t *testing.T) {
 		HtmlURL: "http://test.com/test.html",
 	}
 	dataByte, err := json.Marshal(testData)
+	if err != nil {
+		t.Errorf("Error to marshal json: %v", err)
+	}
+
 	err = rdb.RPush(ctx, "category:test:articles", dataByte).Err()
 	require.NoError(t, err)
 	err = rdb.Expire(ctx, "category:test:articles", time.Second*30).Err()

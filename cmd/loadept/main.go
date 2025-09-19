@@ -15,7 +15,8 @@ import (
 	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/infrastructure/cache"
 	"github.com/loadept/loadept.com/internal/infrastructure/database"
-	repository "github.com/loadept/loadept.com/internal/repository/redis"
+	"github.com/loadept/loadept.com/internal/repository"
+	rdbRepository "github.com/loadept/loadept.com/internal/repository/redis"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/loadept/loadept.com/pkg/logger"
 	"github.com/redis/go-redis/v9"
@@ -28,7 +29,7 @@ var (
 )
 
 func init() {
-	config.LoadConfig()
+	config.LoadEnviron()
 	logger.NewLogger()
 
 	{ // Sqlite connection
@@ -75,8 +76,14 @@ func main() {
 	mux := http.NewServeMux()
 	httpClient := &http.Client{}
 
-	categoryRepository := repository.NewCategoryRepository(rdb, ctx)
-	articleRepository := repository.NewArticleRepository(rdb, ctx)
+	checkRedisRepository := rdbRepository.NewCheckHealthRedisRepository(rdb)
+	checkRedisService := service.NewCheckHealthRedisService(checkRedisRepository)
+	checkDBRepository := repository.NewCheckHealthDBRepository(conn)
+	checkDBService := service.NewCheckHealthDBService(checkDBRepository)
+	healthHandler := handler.NewHealthHandler(checkRedisService, checkDBService)
+
+	categoryRepository := rdbRepository.NewCategoryRepository(rdb, ctx)
+	articleRepository := rdbRepository.NewArticleRepository(rdb, ctx)
 
 	articleService := service.NewArticleService(httpClient, articleRepository)
 	articleHandler := handler.NewApiArticlesHandler(articleService)
@@ -86,6 +93,7 @@ func main() {
 
 	{
 		mux.Handle("/", middleware.BrotliEncorder(api.ServeSPA("web/dist", "index.html")))
+		mux.HandleFunc("/api/health", healthHandler.Health)
 
 		mux.HandleFunc("/api/categories", categoryHandler.GetCategories)
 		mux.HandleFunc("/api/articles/{category}", articleHandler.GetListArticles)
