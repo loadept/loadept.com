@@ -43,10 +43,11 @@ jobs:
           chmod 600 private_key.pem
 
           scp -o StrictHostKeyChecking=no -i ./private_key.pem loadept-web.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
-          ssh -i ./private_key.pem $SERVER_USER@$SERVER_IP "
+          ssh -i ./private_key.pem $SERVER_USER@$SERVER_IP '
+            eval "$(< .environment)" &&
             tar -xzvf loadept-web.tar.gz &&
             pushd ./loadept-web > /dev/null &&
             pm2 start ecosystem.config.js &&
             popd > /dev/null &&
             rm loadept-web.tar.gz
-          "
+          '
