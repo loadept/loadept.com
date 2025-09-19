@@ -42,11 +42,11 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
 
-          TAR_FILE=$(ls -t *.tar.gz | head -n 1)
-
-          scp -o StrictHostKeyChecking=no -i ./private_key.pem *.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
+          scp -o StrictHostKeyChecking=no -i ./private_key.pem loadept-web.tar.gz $SERVER_USER@$SERVER_IP:/home/$SERVER_USER
           ssh -i ./private_key.pem $SERVER_USER@$SERVER_IP "
-            tar -xzvf $TAR_FILE &&
-            sudo /bin/systemctl restart loadept-web &&
-            rm $TAR_FILE
+            tar -xzvf loadept-web.tar.gz &&
+            pushd ./loadept-web > /dev/null &&
+            pm2 start ecosystem.config.js &&
+            popd > /dev/null &&
+            rm loadept-web.tar.gz
           "
