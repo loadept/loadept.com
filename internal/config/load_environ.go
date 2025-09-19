@@ -36,7 +36,7 @@ var (
 //	}
 //
 // Once the configuration is loaded, the variables can be accessed via "Env".
-func LoadConfig() {
+func LoadEnviron() {
 	once.Do(func() {
 		if err := godotenv.Load(); err != nil {
 			log.Println("No .env variables defined, using default variables")
