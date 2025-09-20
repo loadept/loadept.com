@@ -28,7 +28,7 @@ func (c *CategoryRepository) GetCategories(ctx context.Context) (*model.Category
 		}
 	}
 
-	return nil, fmt.Errorf("No results found")
+	return nil, fmt.Errorf("no results found")
 }
 
 func (c *CategoryRepository) StoreCategory(ctx context.Context, categories model.CategoryResponse) error {

@@ -27,7 +27,7 @@ func (a *ArticleRepository) GetRawArticle(ctx context.Context, articleName strin
 		return cacheData, nil
 	}
 
-	return "", fmt.Errorf("No results found")
+	return "", fmt.Errorf("no results found")
 }
 
 func (a *ArticleRepository) StoreRawArticle(ctx context.Context, articleName string, data string) error {
@@ -57,7 +57,7 @@ func (a *ArticleRepository) GetListArticleByCategory(ctx context.Context, catego
 		return articles, nil
 	}
 
-	return nil, fmt.Errorf("No results found")
+	return nil, fmt.Errorf("no results found")
 }
 
 func (a *ArticleRepository) StoreListArticles(ctx context.Context, category string, articles []model.ArticleModel) error {

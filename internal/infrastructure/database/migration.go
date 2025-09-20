@@ -16,7 +16,7 @@ type migration struct {
 
 func NewMigration(conn *sql.DB) (*migration, error) {
 	if conn == nil {
-		return nil, fmt.Errorf("Database connection not initialized")
+		return nil, fmt.Errorf("database connection not initialized")
 	}
 
 	migrationDir := "migrations/"
@@ -56,7 +56,7 @@ func (m *migration) RunMigrations() error {
 
 		if _, err := tx.Exec(query); err != nil {
 			tx.Rollback()
-			return fmt.Errorf("Error running migration %s: %w", file.Name(), err)
+			return fmt.Errorf("error running migration %s: %w", file.Name(), err)
 		}
 	}
 
