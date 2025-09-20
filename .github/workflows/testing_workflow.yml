@@ -55,11 +55,11 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
+      DEBUG: true
       REDIS_HOST: localhost
       REDIS_PORT: 6379
       REDIS_USER: ""
       REDIS_PASSWORD: ""
-      REDIS_TLS_SECURE: "true"
       GITHUB_API: "${{ secrets.GB_API }}"
       GITHUB_TOKEN: "${{ secrets.GB_TOKEN }}"
 
