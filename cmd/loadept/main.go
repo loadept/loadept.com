@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/loadept/loadept.com/api"
 	"github.com/loadept/loadept.com/api/handler"
@@ -101,13 +100,8 @@ func main() {
 		mux.HandleFunc("/api/articles/{category}/{name}", articleHandler.GetRawArticleByName)
 	}
 
-	debug, err := strconv.ParseBool(config.Env.DEBUG)
-	if err != nil {
-		log.Printf("Error to parse to bool: %v", err)
-	}
-
 	var muxWrapped http.Handler
-	if debug {
+	if config.Env.DEBUG == "true" {
 		log.Println("You are in \033[33mdebug\033[0m mode, cors middleware will be used")
 		muxWrapped = middleware.CorsMiddleware(
 			middleware.LoggerMiddleware(mux),

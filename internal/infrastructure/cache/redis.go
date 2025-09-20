@@ -18,10 +18,10 @@ func (c *cache) Connect(ctx context.Context) error {
 	c.ctx = ctx
 
 	var redisScheme string
-	if config.Env.REDIS_SECURE == "true" {
-		redisScheme = "rediss"
-	} else {
+	if config.Env.DEBUG == "true" {
 		redisScheme = "redis"
+	} else {
+		redisScheme = "rediss"
 	}
 
 	redisURL := fmt.Sprintf("%s://%s:%s@%s:%s",

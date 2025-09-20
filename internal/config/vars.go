@@ -25,7 +25,6 @@ type config struct {
 	REDIS_HOST     string `env:"REDIS_HOST" default:"localhost"`
 	REDIS_PORT     string `env:"REDIS_PORT" default:"6379"`
 	REDIS_PASSWORD string `env:"REDIS_PASSWORD" default:""`
-	REDIS_SECURE   string `env:"REDIS_SECURE" default:"false"`
 	SECRET_KEY     string `env:"SECRET_KEY" default:""`
 	GITHUB_API     string `env:"GITHUB_API" default:""`
 	GITHUB_TOKEN   string `env:"GITHUB_TOKEN" default:""`
