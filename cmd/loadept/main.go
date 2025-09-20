@@ -30,6 +30,7 @@ var (
 
 func init() {
 	config.LoadEnviron()
+	config.LoadConfig()
 	logger.NewLogger()
 
 	{ // Sqlite connection

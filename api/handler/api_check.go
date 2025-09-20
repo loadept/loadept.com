@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/loadept/loadept.com/internal/config"
 	"github.com/loadept/loadept.com/internal/model"
 	"github.com/loadept/loadept.com/internal/service"
 	"github.com/loadept/loadept.com/pkg/respond"
@@ -50,7 +51,7 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 
 	response.Services.Redis = rdbPing
 	response.Services.Database = dbPing
-	response.UptimeS = time.Since(time.Now()).String()
+	response.UptimeS = time.Since(config.ApplicationUptime).String()
 
 	response.ResponseTimeMs = fmt.Sprintf("%dms", time.Since(start).Milliseconds())
 	respond.JSON(w, response, http.StatusOK)
