@@ -42,7 +42,7 @@ func TestGetRawArticleByName(t *testing.T) {
 	err = rdb.Set(ctx, "article:test-article", "hello test", time.Second*30).Err()
 	require.NoError(t, err)
 
-	repository := redis.NewArticleRepository(rdb, ctx)
+	repository := redis.NewArticleRepository(rdb)
 	service := service.NewArticleService(httpClient, repository)
 	handler := handler.NewApiArticlesHandler(service)
 
@@ -148,7 +148,7 @@ func TestGetListArticle(t *testing.T) {
 	err = rdb.Expire(ctx, "category:test:articles", time.Second*30).Err()
 	require.NoError(t, err)
 
-	repository := redis.NewArticleRepository(rdb, ctx)
+	repository := redis.NewArticleRepository(rdb)
 	service := service.NewArticleService(httpClient, repository)
 	handler := handler.NewApiArticlesHandler(service)
 

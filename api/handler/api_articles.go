@@ -29,10 +29,11 @@ func (h *ApiArticleHandler) GetRawArticleByName(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	requestCtx := r.Context()
 	category := r.PathValue("category")
 	name := r.PathValue("name")
 
-	articles, err := h.service.GetRawArticleByName(category, name)
+	articles, err := h.service.GetRawArticleByName(requestCtx, category, name)
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{
@@ -68,9 +69,10 @@ func (h *ApiArticleHandler) GetListArticles(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	requestCtx := r.Context()
 	category := r.PathValue("category")
 
-	articles, err := h.service.GetListArticles(category)
+	articles, err := h.service.GetListArticles(requestCtx, category)
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			respond.JSON(w, respond.Map{

@@ -3,6 +3,7 @@ package service
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,8 +33,8 @@ func NewArticleService(httpClient *http.Client, repository *redis.ArticleReposit
 	}
 }
 
-func (s *ArticleService) GetRawArticleByName(category, name string) (io.ReadCloser, error) {
-	cacheArticle, err := s.repository.GetRawArticle(name)
+func (s *ArticleService) GetRawArticleByName(ctx context.Context, category, name string) (io.ReadCloser, error) {
+	cacheArticle, err := s.repository.GetRawArticle(ctx, name)
 	if err == nil && len(cacheArticle) > 0 {
 		reader := strings.NewReader(cacheArticle)
 		return io.NopCloser(reader), nil
@@ -71,7 +72,7 @@ func (s *ArticleService) GetRawArticleByName(category, name string) (io.ReadClos
 		}
 		builder.Write(buffer[:n])
 	}
-	if err := s.repository.StoreRawArticle(name, builder.String()); err != nil {
+	if err := s.repository.StoreRawArticle(ctx, name, builder.String()); err != nil {
 		return nil, err
 	}
 
@@ -79,8 +80,8 @@ func (s *ArticleService) GetRawArticleByName(category, name string) (io.ReadClos
 	return io.NopCloser(newBody), nil
 }
 
-func (s *ArticleService) GetListArticles(category string) ([]model.ArticleModel, error) {
-	cacheArticles, err := s.repository.GetListArticleByCategory(category)
+func (s *ArticleService) GetListArticles(ctx context.Context, category string) ([]model.ArticleModel, error) {
+	cacheArticles, err := s.repository.GetListArticleByCategory(ctx, category)
 	if err == nil && len(cacheArticles) > 0 {
 		return cacheArticles, nil
 	}
@@ -170,7 +171,7 @@ func (s *ArticleService) GetListArticles(category string) ([]model.ArticleModel,
 		}
 	}
 
-	if err := s.repository.StoreListArticles(category, articles); err != nil {
+	if err := s.repository.StoreListArticles(ctx, category, articles); err != nil {
 		return nil, err
 	}
 

@@ -11,20 +11,18 @@ import (
 
 type ArticleRepository struct {
 	rdb *redis.Client
-	ctx context.Context
 }
 
-func NewArticleRepository(rdb *redis.Client, ctx context.Context) *ArticleRepository {
+func NewArticleRepository(rdb *redis.Client) *ArticleRepository {
 	return &ArticleRepository{
 		rdb: rdb,
-		ctx: ctx,
 	}
 }
 
-func (a *ArticleRepository) GetRawArticle(articleName string) (string, error) {
+func (a *ArticleRepository) GetRawArticle(ctx context.Context, articleName string) (string, error) {
 	key := fmt.Sprintf("article:%s", articleName)
 
-	cacheData, err := a.rdb.Get(a.ctx, key).Result()
+	cacheData, err := a.rdb.Get(ctx, key).Result()
 	if err == nil && cacheData != "" {
 		return cacheData, nil
 	}
@@ -32,20 +30,20 @@ func (a *ArticleRepository) GetRawArticle(articleName string) (string, error) {
 	return "", fmt.Errorf("No results found")
 }
 
-func (a *ArticleRepository) StoreRawArticle(articleName string, data string) error {
+func (a *ArticleRepository) StoreRawArticle(ctx context.Context, articleName string, data string) error {
 	key := fmt.Sprintf("article:%s", articleName)
 
-	if err := a.rdb.Set(a.ctx, key, data, 0).Err(); err != nil {
+	if err := a.rdb.Set(ctx, key, data, 0).Err(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (a *ArticleRepository) GetListArticleByCategory(category string) ([]model.ArticleModel, error) {
+func (a *ArticleRepository) GetListArticleByCategory(ctx context.Context, category string) ([]model.ArticleModel, error) {
 	key := fmt.Sprintf("category:%s:articles", category)
 
-	cacheData, err := a.rdb.LRange(a.ctx, key, 0, -1).Result()
+	cacheData, err := a.rdb.LRange(ctx, key, 0, -1).Result()
 	if err == nil && len(cacheData) > 0 {
 		var articles []model.ArticleModel
 
@@ -62,7 +60,7 @@ func (a *ArticleRepository) GetListArticleByCategory(category string) ([]model.A
 	return nil, fmt.Errorf("No results found")
 }
 
-func (a *ArticleRepository) StoreListArticles(category string, articles []model.ArticleModel) error {
+func (a *ArticleRepository) StoreListArticles(ctx context.Context, category string, articles []model.ArticleModel) error {
 	key := fmt.Sprintf("category:%s:articles", category)
 
 	pipe := a.rdb.Pipeline()
@@ -71,9 +69,9 @@ func (a *ArticleRepository) StoreListArticles(category string, articles []model.
 		if err != nil {
 			return err
 		}
-		pipe.RPush(a.ctx, key, articleJSON)
+		pipe.RPush(ctx, key, articleJSON)
 	}
-	_, err := pipe.Exec(a.ctx)
+	_, err := pipe.Exec(ctx)
 	if err != nil {
 		return err
 	}

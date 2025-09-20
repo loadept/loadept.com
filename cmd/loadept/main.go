@@ -83,7 +83,7 @@ func main() {
 	healthHandler := handler.NewHealthHandler(checkRedisService, checkDBService)
 
 	categoryRepository := rdbRepository.NewCategoryRepository(rdb, ctx)
-	articleRepository := rdbRepository.NewArticleRepository(rdb, ctx)
+	articleRepository := rdbRepository.NewArticleRepository(rdb)
 
 	articleService := service.NewArticleService(httpClient, articleRepository)
 	articleHandler := handler.NewApiArticlesHandler(articleService)
