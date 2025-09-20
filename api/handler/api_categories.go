@@ -26,7 +26,9 @@ func (h *ApiCategoriesHandler) GetCategories(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	categories, err := h.service.GetCategories()
+	requestCtx := r.Context()
+
+	categories, err := h.service.GetCategories(requestCtx)
 	if err != nil {
 		respond.JSON(w, respond.Map{
 			"detail": "An error occurred while retrieving results",

@@ -29,7 +29,7 @@ func TestGetCategories(t *testing.T) {
 	}
 
 	rdb := redisClient.GetClient()
-	repository := redis.NewCategoryRepository(rdb, ctx)
+	repository := redis.NewCategoryRepository(rdb)
 	service := service.NewCategoryService(httpClient, repository)
 	handler := handler.NewApiCategoryHandler(service)
 

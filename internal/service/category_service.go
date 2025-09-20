@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -26,8 +27,8 @@ func NewCategoryService(httpClient *http.Client, repository *redis.CategoryRepos
 	}
 }
 
-func (s *CategoryService) GetCategories() (*model.CategoryResponse, error) {
-	cacheCategory, err := s.respository.GetCategories()
+func (s *CategoryService) GetCategories(ctx context.Context) (*model.CategoryResponse, error) {
+	cacheCategory, err := s.respository.GetCategories(ctx)
 	if err == nil {
 		return cacheCategory, nil
 	}
@@ -57,7 +58,7 @@ func (s *CategoryService) GetCategories() (*model.CategoryResponse, error) {
 		return nil, err
 	}
 
-	if err := s.respository.StoreCategory(categories); err != nil {
+	if err := s.respository.StoreCategory(ctx, categories); err != nil {
 		return nil, err
 	}
 

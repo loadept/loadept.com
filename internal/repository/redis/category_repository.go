@@ -11,18 +11,16 @@ import (
 
 type CategoryRepository struct {
 	rdb *redis.Client
-	ctx context.Context
 }
 
-func NewCategoryRepository(rdb *redis.Client, ctx context.Context) *CategoryRepository {
+func NewCategoryRepository(rdb *redis.Client) *CategoryRepository {
 	return &CategoryRepository{
 		rdb: rdb,
-		ctx: ctx,
 	}
 }
 
-func (c *CategoryRepository) GetCategories() (*model.CategoryResponse, error) {
-	cacheData, err := c.rdb.Get(c.ctx, "categories").Result()
+func (c *CategoryRepository) GetCategories(ctx context.Context) (*model.CategoryResponse, error) {
+	cacheData, err := c.rdb.Get(ctx, "categories").Result()
 	if err == nil && cacheData != "" {
 		var categories model.CategoryResponse
 		if err := json.Unmarshal([]byte(cacheData), &categories); err == nil {
@@ -33,12 +31,12 @@ func (c *CategoryRepository) GetCategories() (*model.CategoryResponse, error) {
 	return nil, fmt.Errorf("No results found")
 }
 
-func (c *CategoryRepository) StoreCategory(categories model.CategoryResponse) error {
+func (c *CategoryRepository) StoreCategory(ctx context.Context, categories model.CategoryResponse) error {
 	categoriesJSON, err := json.Marshal(categories)
 	if err != nil {
 		return err
 	}
-	c.rdb.Set(c.ctx, "categories", categoriesJSON, 0)
+	c.rdb.Set(ctx, "categories", categoriesJSON, 0)
 
 	return nil
 }
