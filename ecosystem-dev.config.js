@@ -7,6 +7,7 @@ module.exports = {
       interpreter_args: "run",
       watch: ["cmd/", "api/", "internal/", "pkg/"],
       cwd: "./",
+      restart_delay: 5000,
     }
   ]
 }

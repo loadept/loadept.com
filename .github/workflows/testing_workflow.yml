@@ -3,6 +3,16 @@ name: Server tests
 on:
   push:
     branches: [main]
+    paths:
+      - 'cmd/**'
+      - 'api/**'
+      - 'internal/**'
+      - 'pkg/**'
+      - 'web/**'
+      - 'scripts/**'
+      - 'test/**'
+      - 'go.mod'
+      - 'go.sum'
 
 jobs:
   Unit-Testing:
