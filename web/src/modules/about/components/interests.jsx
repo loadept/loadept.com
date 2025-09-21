@@ -20,7 +20,7 @@ export const Interests = () => {
           <span className='text-sm md:text-base'>Aprendizaje continuo</span>
         </div>
         <div className='flex items-center gap-3 bg-[#282c34] p-4 rounded-lg'>
-          <span className='text-3xl text-[#98c379]'>󰮮</span>
+          <span className='text-3xl text-[#98c379]'></span>
           <span className='text-sm md:text-base'>Código Abierto</span>
         </div>
       </div>
