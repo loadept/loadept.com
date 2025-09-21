@@ -8,7 +8,7 @@ export const ArticlesSection = ({ articlesData, categoryData, activeCategory }) 
 
   const handleClick = (article, url) => {
     setData(url)
-    route(`/article/${activeCategory}/${article}`)
+    route(`/articles/${activeCategory}/${article}`)
   }
 
   return (

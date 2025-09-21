@@ -1,6 +1,11 @@
 import { Link } from 'preact-router/match'
+import { useEffect } from 'preact/hooks'
 
 export const NotFound = () => {
+  useEffect(() => {
+    document.title = '404 - Página no encontrada - loadept'
+  }, [])
+
   return (
     <div className='container px-4 py-12 max-w-lg mx-auto'>
       <div className='space-y-6 text-center'>
@@ -23,9 +28,8 @@ export const NotFound = () => {
 
         <div className='pt-6 hover:text-[#528bff]'>
           <Link
-            to='/'
+            href='/'
             className='inline-flex items-center gap-2 text-lg text-[#61afef] transition-colors animate-pulse'
-            title='home'
           >
             <span className='text-[#98c379]'>$</span> cd /
           </Link>

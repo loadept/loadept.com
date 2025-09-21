@@ -17,7 +17,7 @@ const Main = () => {
         <Router>
           <Index path='/' element={<Index />} />
           <About path='/about' element={<About />} />
-          <Article path='/article/:category/:name' />
+          <Article path='/articles/:category/:name' />
           <NotFound default />
         </Router>
       </main>
