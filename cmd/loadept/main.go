@@ -91,8 +91,12 @@ func main() {
 	categoryService := service.NewCategoryService(httpClient, categoryRepository)
 	categoryHandler := handler.NewApiCategoryHandler(categoryService)
 
+	sitemapService := service.NewSitemapService(categoryService, articleService)
+	sitemapHandler := handler.NewSitemapHandler(sitemapService)
+
 	{
 		mux.Handle("/", middleware.BrotliEncorder(api.ServeSPA("web/dist", "index.html")))
+		mux.HandleFunc("/sitemap.xml", sitemapHandler.GetSitemap)
 		mux.HandleFunc("/api/health", healthHandler.Health)
 
 		mux.HandleFunc("/api/categories", categoryHandler.GetCategories)
