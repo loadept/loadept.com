@@ -59,7 +59,7 @@ func (s *ArticleService) GetRawArticleByName(ctx context.Context, category, name
 
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
-		return nil, fmt.Errorf("Error to request api: %d", resp.StatusCode)
+		return nil, fmt.Errorf("error to request api: %d", resp.StatusCode)
 	}
 
 	reader := bufio.NewReader(resp.Body)
@@ -104,7 +104,7 @@ func (s *ArticleService) GetListArticles(ctx context.Context, category string) (
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Error to request api: %d", resp.StatusCode)
+		return nil, fmt.Errorf("error to request api: %d", resp.StatusCode)
 	}
 
 	var files []struct {
@@ -119,7 +119,7 @@ func (s *ArticleService) GetListArticles(ctx context.Context, category string) (
 		return nil, err
 	}
 
-	articles := []model.ArticleModel{}
+	var articles []model.ArticleModel
 	var commitRequests []*http.Request
 	for _, file := range files {
 		if file.Type != "file" || !strings.HasSuffix(file.Name, ".md") {
@@ -128,8 +128,8 @@ func (s *ArticleService) GetListArticles(ctx context.Context, category string) (
 
 		article := model.ArticleModel{
 			Sha:     file.SHA,
-			Name:    file.Name,
-			Path:    file.Path,
+			Name:    strings.TrimSuffix(file.Name, ".md"),
+			Path:    strings.TrimSuffix(file.Path, ".md"),
 			HtmlURL: file.HtmlURL,
 		}
 

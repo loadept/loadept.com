@@ -50,7 +50,7 @@ func (s *CategoryService) GetCategories(ctx context.Context) (*model.CategoryRes
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Error to request api: %d", resp.StatusCode)
+		return nil, fmt.Errorf("error to request api: %d", resp.StatusCode)
 	}
 
 	var categories model.CategoryResponse
