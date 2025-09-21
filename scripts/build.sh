@@ -6,7 +6,7 @@ APP_NAME=app
 DIR_NAME=loadept-web
 
 pushd ./web > /dev/null
-if ! pnpm i; then
+if ! pnpm i --frozen-lockfile; then
     echo "Install dependencies failed"
     exit 1
 fi
@@ -28,7 +28,7 @@ mkdir $DIR_NAME/web
 
 mv $APP_NAME $DIR_NAME
 mv web/dist $DIR_NAME/web
-mv ecosystem.config.js $DIR_NAME
+cp ecosystem.config.js $DIR_NAME
 
 tar -czvf $DIR_NAME.tar.gz $DIR_NAME
 

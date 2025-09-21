@@ -9,19 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.7",
-    "axios": "^1.9.0",
-    "front-matter": "^4.0.2",
-    "preact": "^10.26.5",
-    "preact-router": "^4.1.2",
-    "react-markdown": "^10.1.0",
-    "rehype-raw": "^7.0.0",
-    "remark-gfm": "^4.0.1",
-    "tailwindcss": "^4.1.7"
+    "@tailwindcss/vite": "4.1.7",
+    "axios": "1.9.0",
+    "front-matter": "4.0.2",
+    "preact": "10.26.5",
+    "preact-router": "4.1.2",
+    "react-markdown": "10.1.0",
+    "rehype-raw": "7.0.0",
+    "remark-gfm": "4.0.1",
+    "tailwindcss": "4.1.7"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.10.1",
-    "@tailwindcss/typography": "^0.5.16",
-    "vite": "^6.3.5"
+    "@preact/preset-vite": "2.10.1",
+    "@tailwindcss/typography": "0.5.16",
+    "vite": "6.3.5"
   }
 }
