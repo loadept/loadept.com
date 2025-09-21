@@ -12,7 +12,7 @@ export const IntroText = () => {
         con proyectos y notas en Markdown.
       </p>
       <p>
-        Espero que te sirva tanto como a mí. <span className='text-amber-300 text-3xl'>󰈸</span>
+        Espero que te sirva tanto como a mí. <span className='text-amber-300 text-3xl'></span>
       </p>
     </article>
   )
