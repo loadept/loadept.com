@@ -1,6 +1,15 @@
 export const Experience = () => {
   const experiences = [
     {
+      role: 'Analista de Desarrollo @ Coopac Fondesurco',
+      description: `Me desempeñé como desarrollador de software en la cooperativa, donde resolví incidencias en el
+      sistema legacy y desarrollé nuevas funcionalidades clave para el negocio. Integré la central de riesgos con
+      servicios externos, conectando la API principal en Node.js con el sistema legacy en PHP. Además, participé
+      en la migración de reportes críticos y en la configuración de servidores PostgreSQL, contribuyendo a mejorar
+      la eficiencia operativa y la estabilidad del sistema.`,
+      color: '#c678dd'
+    },
+    {
       role: 'Desarrollador Full Stack @ 10x Tecnología',
       description: `Realicé mantenimiento y mejoras en Laravel y Next.js, optimizando rendimiento y funcionalidad.
       Refactoricé módulos para facilitar su mantenimiento, corregí bugs en el ERP y ajusté funcionalidades
@@ -8,14 +17,14 @@ export const Experience = () => {
       color: '#98c379'
     },
     {
-      role: 'Desarrollador Backend @ Tiksup',
+      role: 'Desarrollador Backend @ Tiksup (Proyecto de Instuto)',
       description: `Participación en el desarrollo de Tiksup, una plataforma de videos con recomendaciones en tiempo real,
       utilizando microservicios con Go, Python, Node.js, Kafka, MongoDB, Redis y Spark. Gestión del
       almacenamiento en AWS S3 y despliegue en AWS EC2.`,
       color: '#61afef'
     },
     {
-      role: 'Desarrollador Full Stack @ Luchadores',
+      role: 'Desarrollador Full Stack @ Luchadores (Proyecto de Instuto)',
       description: `Desarrollo de una aplicación multiplataforma para pacientes con cáncer, con arquitectura de
       microservicios. Implementación del backend con Node.js y Nginx, desplegado en AWS EC2 con S3. Uso de
       Docker para contenerización y entornos consistentes.`,
