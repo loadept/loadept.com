@@ -1,0 +1,7 @@
+Dockerfile
+Containerfile
+docker-compose.yml
+podman-compose.yml
+.git/
+.env*
+.gitignore

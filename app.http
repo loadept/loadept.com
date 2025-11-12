@@ -1,0 +1,40 @@
+@URL = http://localhost:8080
+
+GET {{URL}}/sitemap.xml
+Content-Type: application/json
+
+###
+
+GET {{URL}}/api/v1/health
+Content-Type: application/json
+
+###
+
+GET {{URL}}/api/v1/categories
+Content-Type: application/json
+
+###
+
+GET {{URL}}/api/v1/articles/Go-lang
+Content-Type: application/json
+
+###
+
+GET {{URL}}/api/v1/articles/Go-lang/Concurrencia en Go: Canales y Select
+Content-Type: application/json
+
+###
+
+POST {{URL}}/api/v1/pdf/compress
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="quality"
+
+extreme
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="file.pdf"
+Content-Type: application/pdf
+
+< ./file.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
