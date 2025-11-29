@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@font-face {
+    font-family: 'firacode';
+    src: url('../assets/fonts/firacode.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    font-family: 'firacode', sans-serif;
+    font-variant-ligatures: normal;
+    font-weight: 300;
+    background-color: #1f2329;
+    color: #abb2bf;
+    font-size: 17px;
+    scrollbar-gutter: stable;
+}
+
+@theme {
+    --animate-glitch-infinite: glitch infinite 3.5s steps(1);
+
+    @keyframes glitch {
+
+        0%,
+        100% {
+            background: url('../assets/img/loadept-glitch.webp');
+            background-size: 120%;
+            background-position: center;
+        }
+
+        92.5% {
+            background: url('../assets/img/loadept-glitch-01.webp');
+            background-size: 120%;
+            background-position: center;
+        }
+
+        95% {
+            background: url('../assets/img/loadept-glitch-02.webp');
+            background-size: 120%;
+            background-position: center;
+        }
+
+        97.5% {
+            background: url('../assets/img/loadept-glitch-03.webp');
+            background-size: 120%;
+            background-position: center;
+        }
+    }
+}
