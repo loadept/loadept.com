@@ -1,46 +1,64 @@
-# Astro Starter Kit: Basics
+# loadept.com
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+> Blog personal, portfolio y colección de herramientas open source para desarrolladores.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+![loadept banner](https://loadept.com/static/img/loadept.webp)
 
-## 🚀 Project Structure
+Este repositorio contiene el código fuente del frontend de [loadept.com](https://loadept.com), construido con **Astro**, **React (Preact)** y **TailwindCSS**.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🚀 Stack Tecnológico
+
+- **Framework:** [Astro 5](https://astro.build) (Static Site Generation)
+- **UI Library:** [Preact](https://preactjs.com/) (para componentes interactivos)
+- **Estilos:** [TailwindCSS v4](https://tailwindcss.com)
+- **Contenido:** Markdown & MDX (Content Collections)
+- **Iconos:** [Lucide](https://lucide.dev)
+- **Tipografía:** Fira Code (Nerd Font)
+
+## 📂 Estructura del Proyecto
+
+El proyecto sigue una arquitectura modular para facilitar la escalabilidad:
 
 ```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+src/
+├── content/          # Colecciones de contenido (Markdown)
+│   ├── posts/        # Artículos del blog
+│   └── resources/    # Documentación de herramientas y paquetes
+├── modules/          # Módulos funcionales (Feature-based architecture)
+│   ├── home/         # Lógica de la página de inicio
+│   ├── tools/        # Herramientas interactivas (PDF, Imágenes, etc.)
+│   └── shared/       # Componentes y utilidades compartidas
+├── pages/            # Rutas de Astro (File-based routing)
+│   ├── index.astro   # Home
+│   ├── [tool].astro  # Generador de páginas de herramientas
+│   └── ...
+└── layouts/          # Plantillas base (SEO, Header, Footer)
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🛠️ Características Principales
 
-## 🧞 Commands
+- **Arquitectura de Islas:** Hidratación parcial con `client:load` solo donde es necesario.
+- **Rutas Dinámicas:** Generación automática de páginas para posts y herramientas desde archivos.
+- **SEO Optimizado:** Metadatos dinámicos, Open Graph y JSON-LD.
+- **View Transitions:** Navegación suave tipo SPA sin sacrificar el rendimiento SSG.
+- **Herramientas Integradas:**
+  - Compresor de PDF (WASM/API)
+  - Documentación de paquetes Go
+  - Blog técnico
 
-All commands are run from the root of the project, from a terminal:
+## 🧞 Comandos
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+| Comando | Acción |
+| :--- | :--- |
+| `pnpm install` | Instala las dependencias |
+| `pnpm dev` | Inicia el servidor de desarrollo en `localhost:4321` |
+| `pnpm build` | Compila el sitio para producción en `./dist/` |
+| `pnpm preview` | Previsualiza la build localmente |
 
-## 👀 Want to learn more?
+## 📄 Licencia
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Este proyecto es Open Source y está disponible bajo la licencia [MIT](LICENSE).
+
+---
+
+Hecho con ❤️ y mucho ☕ por [loadept](https://loadept.com/about).
