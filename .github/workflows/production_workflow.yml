@@ -28,7 +28,7 @@ jobs:
               exit 1
           fi
 
-          export PUBLIC_API_URL=/
+          export PUBLIC_API_URL=""
           if ! pnpm run build; then
               echo "Build static failed"
               exit 1

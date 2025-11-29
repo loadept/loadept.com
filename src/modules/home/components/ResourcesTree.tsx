@@ -1,4 +1,3 @@
-import { ChevronDown, ChevronRight } from 'lucide-preact'
 import { useState } from 'preact/hooks'
 import type { Category, Post, Resources } from '../types/home'
 
@@ -27,21 +26,15 @@ export const ResourcesTree = (
         <div key={resource.label}>
           <button
             onClick={() => toggleResource(resource.label)}
-            className="flex items-center gap-2 text-[#abb2bf] hover:text-[#61afef] transition-colors group w-full"
+            className="flex items-center gap-2 text-[#61afef] hover:text-[#528bff] transition-colors w-full font-bold text-lg"
           >
-            {expandedResources.includes(resource.label) ? (
-              <ChevronDown className="h-5 w-5 text-[#98c379]" />
-            ) : (
-              <ChevronRight className="h-5 w-5 text-[#98c379]" />
-            )}
-            <span className="text-[#98c379] text-lg">|</span>
-            <span className="font-mono text-lg font-semibold">
-              {resource.label}
-            </span>
+            <span>{expandedResources.includes(resource.label) ? "▼" : "▶"}</span>
+            <span>|</span>
+            <span>{resource.label}</span>
           </button>
 
           {expandedResources.includes(resource.label) && (
-            <div className="ml-8 mt-3 space-y-2 border-l border-[#98c379] pl-4">
+            <div className="ml-6 mt-3 space-y-2 border-l border-[#61afef] pl-4">
               {resource.label === "Posts"
                 ? categories.map((category, k) => {
                     const filteredPosts = posts.filter((a) => a.category.name === category.name)
@@ -50,34 +43,23 @@ export const ResourcesTree = (
                       <div key={k}>
                         <button
                           onClick={() => toggleArticleCategory(category.name)}
-                          className="flex items-center gap-2 text-[#abb2bf] hover:text-[#61afef] transition-colors group"
+                          className="flex items-center gap-2 text-[#abb2bf] hover:text-[#c5c8c6] transition-colors font-semibold text-base"
                         >
-                          {expandedArticleCategories.includes(category.name) ? (
-                            <ChevronDown className="h-4 w-4 text-[#61afef]" />
-                          ) : (
-                            <ChevronRight className="h-4 w-4 text-[#61afef]" />
-                          )}
-                          <span className="ml-1 text-[#3e4451] text-base">├──</span>
-                          <span className="font-mono text-base">{category.name}</span>
+                          <span>{expandedArticleCategories.includes(category.name) ? "▼" : "▶"}</span>
+                          <span>├──</span>
+                          <span>{category.name}</span>
                         </button>
 
                         {expandedArticleCategories.includes(category.name) && (
-                          <div className="ml-8 mt-2 space-y-1 border-l border-[#3e4451] pl-4">
+                          <div className="ml-6 mt-2 space-y-1 border-l border-[#abb2bf] pl-4">
                             {filteredPosts.map((post, k) => (
                               <a
                                 key={k}
                                 href={`/posts/${post.slug}`}
-                                className="flex items-center gap-2 text-[#abb2bf] hover:text-[#61afef] transition-colors"
+                                className="flex items-center gap-2 text-[#abb2bf] hover:text-[#528bff] transition-colors text-sm hover:underline"
                               >
-                                <span className="text-[#3e4451] text-sm">└──</span>
-                                <span
-                                  className="font-mono text-sm"
-                                  style={{
-                                    viewTransitionName: `post-${post.slug.replace(/\//g, '-').replace(/ /g, '-')}`,
-                                  }}
-                                >
-                                  {post.title}
-                                </span>
+                                <span>└──</span>
+                                <span>{post.title}</span>
                               </a>
                             ))}
                           </div>
@@ -89,13 +71,14 @@ export const ResourcesTree = (
                     <a
                       key={item.label}
                       href={item.href || "#"}
-                      className={`flex items-center gap-2 text-[#abb2bf] transition-colors group ${
-                        item.href === "#" ? "cursor-not-allowed opacity-50" : "hover:text-[#61afef]"
+                      className={`flex items-center gap-2 text-base transition-colors ${
+                        item.href === "#"
+                          ? "text-[#5c6370] cursor-not-allowed opacity-60"
+                          : "text-[#abb2bf] hover:text-[#528bff]"
                       }`}
                     >
-                      <span className="text-[#3e4451] text-lg">├──</span>
-                      {item.href === "#" && <span className="text-[#3e4451] text-sm">//</span>}
-                      <span className="font-mono">{item.label}</span>
+                      <span>├──</span>
+                      <span>{item.label}</span>
                     </a>
                   ))}
             </div>
