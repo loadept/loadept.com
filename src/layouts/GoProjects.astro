@@ -3,21 +3,30 @@ import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
 import Header from '../modules/shared/components/Header.astro'
 import Footer from '../modules/shared/components/Footer.astro'
+import BackArrow from '../modules/shared/components/BackArrow.astro'
+import FrontTags from '../modules/posts/components/FrontTags.astro'
 
 interface Props {
-	title: string
-	description?: string
-	image?: string
-	keywords?: string
+  frontmatter: {
+  	title: string
+  	description: string
+  	keywords: string[]
+    goImport: string
+    goSource: string
+  }
 }
 
-const {
-	title,
-	description = 'Blog de programación donde comparto mis notas, proyectos y documentación técnica. Exploraciones en desarrollo, soluciones a problemas y guías prácticas que me sirvieron y quizá también te ayuden.',
-	image = 'https://loadept.com/static/img/loadept.webp',
-	keywords = 'markdown, docs, development, desarrollo, programación, tutoriales'
+const { 
+	frontmatter: {
+    title,
+    description,
+    keywords,
+    goImport,
+    goSource,
+  }
 } = Astro.props
 
+const image = 'https://loadept.com/static/img/loadept.webp'
 const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 ---
 
@@ -34,7 +43,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 		<meta name="description" content={description}>
-		<meta name="keywords" content={keywords}>
+		<meta name="keywords" content={keywords.join(', ')} />
 		<meta name="author" content="loadept">
 		<meta name="robots" content="index, follow">
 
@@ -50,6 +59,9 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
 
+    <meta name="go-import" content={goImport}>
+    <meta name="go-source" content={goSource}>
+
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<ClientRouter />
@@ -57,7 +69,21 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 	<body class="min-h-screen flex flex-col">
 		<Header />
 			<main class="grow mt-12">
-				<slot />
+        <div class="container mx-auto px-4 max-w-4xl mb-20">
+          <BackArrow text="Volver al inicio" href="/" />
+          <h1 
+            class="text-5xl font-bold text-[#e5c07b] mb-4"
+            transition:name={`resource-${title.replace(/\//g, '-').replace(/ /g, '-')}`}
+          >
+            {title.toUpperCase()}
+          </h1>
+          <div class='flex flex-wrap items-center text-sm text-[#5c6370] mb-8 gap-y-2'>
+            <FrontTags tags={keywords} />
+          </div>
+          <article class="prose prose-invert prose-headings:text-[#e5c07b] prose-a:text-[#61afef] max-w-none">
+            <slot />
+          </article>
+        </div>
 			</main>
 		<Footer />
 	</body>
