@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import FrontDate from '../../modules/posts/components/FrontDate.astro'
+import FrontTags from '../../modules/posts/components/FrontTags.astro'
+import BackArrow from '../../modules/shared/components/BackArrow.astro'
+import type { FrontMatter } from '../../modules/shared/types/frontmatter'
+
+export async function getStaticPaths() {
+  const posts = import.meta.glob('../../content/posts/**/*.md', { eager: true })
+
+  return Object.entries(posts).map(([filePath, post]: [string, any]) => {
+    const slug = filePath.replace('../../content/posts/', '').replace('.md', '').trim()
+
+    return {
+      params: { slug },
+      props: { post },
+    }
+  })
+}
+
+const { post } = Astro.props
+
+const frontmatter: FrontMatter = post.frontmatter
+const Content = post.Content
+
+const description = `Artículo sobre ${frontmatter.title}. Aprende más sobre ${frontmatter.keywords.join(', ')} en loadept.com`
+const keywords = frontmatter.keywords.join(', ')
+---
+
+<Layout 
+  title={frontmatter.title}
+  description={description}
+  keywords={keywords}
+>
+  <div class="container mx-auto px-4 max-w-4xl mb-20">
+    <BackArrow text="Volver al inicio" href="/" />
+    <article class="prose prose-invert prose-headings:text-[#e5c07b] prose-a:text-[#61afef] max-w-none">
+      <h1 class="text-5xl font-bold text-[#e5c07b] mb-4">
+        {frontmatter.title.toUpperCase()}
+      </h1>
+      <div class='flex flex-wrap items-center text-sm text-[#5c6370] mb-8 gap-y-2'>
+        <FrontDate date={frontmatter.date} />
+        <FrontTags tags={frontmatter.keywords} />
+      </div>
+      <Content />
+    </article>
+  </div>
+</Layout>

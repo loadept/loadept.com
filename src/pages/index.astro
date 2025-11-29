@@ -1,11 +1,79 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro'
+import Intro from '../modules/home/components/intro.astro'
+import { Content } from '../modules/home/components/Content'
+import type { Category, Resources } from '../modules/home/types/home'
+import type { FrontMatter, FrontMatterResource } from '../modules/shared/types/frontmatter'
+import type { MarkdownInstance } from 'astro'
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allPosts = import.meta.glob('../content/posts/**/*.md', { eager: true })
+const posts = Object.entries(allPosts).map(([filePath, post]: [string, any]) => {
+  const slug = filePath.replace('../content/posts/', '').replace('.md', '').trim()
+	const frontmatter: FrontMatter = post.frontmatter
+
+	return {
+		slug: slug,
+		title: frontmatter.title,
+		date: frontmatter.date,
+		category: frontmatter.category,
+	}
+})
+const categories: Category[] = Array.from(
+	new Map(posts.map(p => ([p.category.name, p.category]))).values()
+)
+
+const goResources = import.meta.glob<MarkdownInstance<FrontMatterResource>>('../content/resources/go-packages/*.md', { eager: true })
+const goPackages = Object.entries(goResources).map(([filePath, pkg]) => {
+	const slug = filePath.replace('../content/resources/go-packages/', '').replace('.md', '').trim()
+	const frontmatter: FrontMatterResource = pkg.frontmatter
+
+	return {
+		label: frontmatter.title,
+		href: `/${slug}`,
+	}
+})
+
+const toolsResources = import.meta.glob('../content/resources/tools/**', { eager: true })
+const tools = Object.entries(toolsResources).map(([filePath, module]: [string, any]) => {
+    const slug = filePath.replace('../content/resources/tools/', '').replace(/\.(md|astro)$/, '')
+      .trim()
+      .toLocaleLowerCase()
+    const title = module.frontmatter?.title || module.metadata?.title || slug
+
+	return {
+		label: title,
+		href: `/${slug}`,
+	}
+})
+
+const resources: Resources[] = [
+  {
+    label: "Posts",
+    items: []
+  },
+  {
+    label: "Paquetes Go",
+    items: goPackages,
+  },
+  {
+    label: "Más herramientas",
+    items: tools,
+  },
+]
 ---
 
-<Layout>
-	<Welcome />
+<Layout 
+	title="Blog de Desarrollo de Software, Go y Linux"
+	description="Blog personal sobre desarrollo de software, backend con Go, administración de servidores Linux y buenas prácticas de programación. Tutoriales y notas técnicas."
+	keywords="blog programación, go, golang, linux, backend, devops, tutoriales, software development"
+>
+	<div class="container mx-auto px-4">
+		<Intro />
+		<Content
+			client:load
+			categories={categories}
+			posts={posts}
+			resources={resources}
+		/>
+	</div>
 </Layout>
