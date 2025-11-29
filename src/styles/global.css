@@ -3,7 +3,7 @@
 
 @font-face {
     font-family: 'firacode';
-    src: url('../assets/fonts/firacode.woff2') format('woff2');
+    src: url('/fonts/firacode.woff2') format('woff2');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -23,28 +23,27 @@
     --animate-glitch-infinite: glitch infinite 3.5s steps(1);
 
     @keyframes glitch {
-
         0%,
         100% {
-            background: url('../assets/img/loadept-glitch.webp');
+            background: url('/images/loadept-glitch.webp');
             background-size: 120%;
             background-position: center;
         }
 
         92.5% {
-            background: url('../assets/img/loadept-glitch-01.webp');
+            background: url('/images/loadept-glitch-01.webp');
             background-size: 120%;
             background-position: center;
         }
 
         95% {
-            background: url('../assets/img/loadept-glitch-02.webp');
+            background: url('/images/loadept-glitch-02.webp');
             background-size: 120%;
             background-position: center;
         }
 
         97.5% {
-            background: url('../assets/img/loadept-glitch-03.webp');
+            background: url('/images/loadept-glitch-03.webp');
             background-size: 120%;
             background-position: center;
         }

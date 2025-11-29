@@ -7,17 +7,16 @@ import Footer from '../modules/shared/components/Footer.astro'
 interface Props {
 	title: string
 	description?: string
-	image?: string
 	keywords?: string
 }
 
 const {
 	title,
 	description = 'Blog de programación donde comparto mis notas, proyectos y documentación técnica. Exploraciones en desarrollo, soluciones a problemas y guías prácticas que me sirvieron y quizá también te ayuden.',
-	image = 'https://loadept.com/static/img/loadept.webp',
-	keywords = 'markdown, docs, development, desarrollo, programación, tutoriales'
+	keywords = 'markdown, docs, development, desarrollo, programación'
 } = Astro.props
 
+const image = 'https://loadept.com/loadept.webp'
 const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 ---
 
@@ -25,33 +24,45 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://loadept.com')
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="icon" href="/favicon.ico" sizes="any" />
-		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-		<link rel="canonical" href={canonicalURL} />
-  	<link rel="sitemap" href="/sitemap-index.xml" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
 
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link
+			rel="preload"
+			href="/fonts/firacode.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
 
+		<link
+			rel="preload"
+			href="/images/loadept-glitch.webp"
+			as="image"
+			type="image/webp"
+			crossorigin="anonymous"
+		/>
+
+		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description}>
 		<meta name="keywords" content={keywords}>
 		<meta name="author" content="loadept">
-		<meta name="robots" content="index, follow">
 
-		<meta property="og:site_name" content="loadept - Blog de programación">
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description}>
 		<meta property="og:image" content={image}>
 		<meta property="og:url" content={canonicalURL}>
-		<meta property="og:type" content="website">
 
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image:alt" content={title} />
+		<meta name="theme-color" content="#1f2329" />
 
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="canonical" href={canonicalURL} />
+  	<link rel="sitemap" href="/sitemap-index.xml" />
 		<ClientRouter />
 	</head>
 	<body class="min-h-screen flex flex-col">
