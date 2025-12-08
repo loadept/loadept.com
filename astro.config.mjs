@@ -14,5 +14,8 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [preact({ compat: true }), sitemap()],
+  integrations: [
+    preact({ compat: true }),
+    sitemap()
+  ],
 });

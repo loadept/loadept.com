@@ -1,8 +1,8 @@
-import type { Category, Post, Resources } from '../types/home'
+import type { Post, Resources } from '../types/home'
 import { ResourcesTree } from './ResourcesTree'
 
 interface Props {
-  categories: Category[]
+  categories: string[]
   posts: Post[]
   resources: Resources[]
 }

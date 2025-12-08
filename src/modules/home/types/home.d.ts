@@ -1,14 +1,7 @@
-export interface Post {
-  slug: string
-  title: string
-  date: string
-  category: Category
-}
+import type { FrontMatter } from "../../shared/types/frontmatter"
 
-export interface Category {
-  name: string
-  color: string
-  icon: string
+export interface Post extends FrontMatter {
+  slug: string
 }
 
 export interface ResourceItem {

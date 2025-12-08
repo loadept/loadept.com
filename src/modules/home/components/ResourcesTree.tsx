@@ -1,9 +1,9 @@
 import { useState } from 'preact/hooks'
-import type { Category, Post, Resources } from '../types/home'
+import type { Post, Resources } from '../types/home'
 
 export const ResourcesTree = (
   { resources, categories, posts }:
-  { resources: Resources[], categories: Category[], posts: Post[] }
+  { resources: Resources[], categories: string[], posts: Post[] }
 ) => {
   const [expandedResources, setExpandedResources] = useState<string[]>(['Posts', 'Paquetes Go', 'Más herramientas'])
   const [expandedArticleCategories, setExpandedArticleCategories] = useState<string[]>([])
@@ -26,7 +26,7 @@ export const ResourcesTree = (
         <div key={resource.label}>
           <button
             onClick={() => toggleResource(resource.label)}
-            className="flex items-center gap-2 text-[#61afef] hover:text-[#528bff] transition-colors w-full font-bold text-lg"
+            className="flex items-center gap-2 text-[#61afef] hover:text-[#528bff] transition-colors w-full font-bold text-lg cursor-pointer"
           >
             <span>{expandedResources.includes(resource.label) ? "▼" : "▶"}</span>
             <span>|</span>
@@ -37,20 +37,20 @@ export const ResourcesTree = (
             <div className="ml-6 mt-3 space-y-2 border-l border-[#61afef] pl-4">
               {resource.label === "Posts"
                 ? categories.map((category, k) => {
-                    const filteredPosts = posts.filter((a) => a.category.name === category.name)
+                    const filteredPosts = posts.filter((a) => a.category === category)
 
                     return (
                       <div key={k}>
                         <button
-                          onClick={() => toggleArticleCategory(category.name)}
-                          className="flex items-center gap-2 text-[#abb2bf] hover:text-[#c5c8c6] transition-colors font-semibold text-base"
+                          onClick={() => toggleArticleCategory(category)}
+                          className="flex items-center gap-2 text-[#abb2bf] hover:text-[#c5c8c6] transition-colors font-semibold text-base cursor-pointer"
                         >
-                          <span>{expandedArticleCategories.includes(category.name) ? "▼" : "▶"}</span>
+                          <span>{expandedArticleCategories.includes(category) ? "▼" : "▶"}</span>
                           <span>├──</span>
-                          <span>{category.name}</span>
+                          <span>{category}</span>
                         </button>
 
-                        {expandedArticleCategories.includes(category.name) && (
+                        {expandedArticleCategories.includes(category) && (
                           <div className="ml-6 mt-2 space-y-1 border-l border-[#abb2bf] pl-4">
                             {filteredPosts.map((post, k) => (
                               <a

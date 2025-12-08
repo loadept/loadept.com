@@ -1,11 +1,8 @@
-import type { Category } from '../../home/types/home'
-
 export interface FrontMatter {
   title: string
   date: string
-  tags: string[]
-  keywords: string[]
-  category: Category
+  keywords?: string[]
+  category: string
 }
 
 export interface FrontMatterResource {

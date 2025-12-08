@@ -2,11 +2,7 @@
 title: Command Pattern en Go
 date: 2025-03-12
 keywords: [design-pattern, command-pattern, go, golang, development, diseño, programación, patrón]
-category: {
-	name: 'Go-lang',
-	color: '#29beb0',
-	icon: ''
-}
+category: Go-lang
 ---
 
 # Definición

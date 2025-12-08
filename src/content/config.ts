@@ -7,11 +7,7 @@ const posts = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     keywords: z.array(z.string()),
-    category: z.object({
-      name: z.string(),
-      icon: z.string().optional(),
-      color: z.string().optional()
-    }).optional()
+    category: z.string().optional()
   })
 })
 

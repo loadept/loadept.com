@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import Intro from '../modules/home/components/intro.astro'
 import { Content } from '../modules/home/components/Content'
-import type { Category, Resources } from '../modules/home/types/home'
+import type { Resources } from '../modules/home/types/home'
 import type { FrontMatter, FrontMatterResource } from '../modules/shared/types/frontmatter'
 import type { MarkdownInstance } from 'astro'
 
@@ -18,8 +18,8 @@ const posts = Object.entries(allPosts).map(([filePath, post]: [string, any]) => 
 		category: frontmatter.category,
 	}
 })
-const categories: Category[] = Array.from(
-	new Map(posts.map(p => ([p.category.name, p.category]))).values()
+const categories: string[] = Array.from(
+	new Map(posts.map(p => ([p.category, p.category]))).values()
 )
 
 const goResources = import.meta.glob<MarkdownInstance<FrontMatterResource>>('../content/resources/go-packages/*.md', { eager: true })

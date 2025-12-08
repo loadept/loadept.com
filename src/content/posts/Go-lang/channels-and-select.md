@@ -2,11 +2,7 @@
 title: Concurrencia en Go - Canales y Select en Acción
 date: 2025-03-10
 keywords: [Go, Concurrencia, Canales, Select]
-category: {
-	name: 'Go-lang',
-	color: '#29beb0',
-	icon: ''
-}
+category: Go-lang
 ---
 
 Un canal es un tipo de dato en **Go**, que se usa para comunicar **goroutines**. Es un tipo de dato primitivo del lenguaje, al igual que `slice`, `array` o `map`.
