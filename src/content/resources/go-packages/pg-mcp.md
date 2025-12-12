@@ -10,7 +10,7 @@ goSource: loadept.com/pg-mcp https://github.com/loadept/pg-mcp https://github.co
 [![Postgres MCP](https://github.com/loadept/pg-mcp/actions/workflows/pg_workflow.yml/badge.svg)](https://github.com/loadept/pg-mcp/actions/workflows/pg_workflow.yml)
 [![Postgres MCP](https://github.com/loadept/pg-mcp/actions/workflows/docker_latest_workflow.yml/badge.svg)](https://github.com/loadept/pg-mcp/actions/workflows/docker_latest_workflow.yml)
 
-**Lenguaje:** Go 1.25+
+**Lenguaje:** Go 1.25+  
 **Tipo:** Ejecutable binario
 
 ## Descripción
@@ -23,13 +23,16 @@ Para obtener las últimas características y mejoras (puede contener cambios no 
 
 #### Con Go
 ```bash
-go install loadept.com/pg-mcp/cmd/pg-mcp@latest
+# Instala el binario en $GOBIN (o $GOPATH/bin)
+go install loadept.com/pg-mcp@latest
+
+# También es posible ejecutar directamente sin instalar:
+go run loadept.com/pg-mcp@latest
 ```
 
 #### Con Docker
 ```bash
-docker run --rm -i loadept/pg-mcp:latest \
-      -u "postgres://usuario:contraseña@host:puerto/basedatos?sslmode=disable"
+docker run --rm -i loadept/pg-mcp:latest -u "postgres://usuario:contraseña@host:puerto/basedatos?sslmode=disable"
 ```
 
 ### Versión Estable (Releases Tagueadas)
@@ -40,8 +43,7 @@ Descarga el ejecutable precompilado para tu sistema operativo desde las [release
 
 #### Con Docker
 ```bash
-docker run --rm -i loadept/pg-mcp:v0.3.1 \
- -u "postgres://usuario:contraseña@host:puerto/basedatos?sslmode=disable"
+docker run --rm -i loadept/pg-mcp:v0.3.1 -u "postgres://usuario:contraseña@host:puerto/basedatos?sslmode=disable"
 ```
 
 ## Ejecución
@@ -74,5 +76,5 @@ Para saber qué tipo de versión tienes instalada, ejecuta `pg-mcp -version`:
 
 ## Compilación desde el código fuente
 ```bash
-go build -o pg-mcp cmd/pg-mcp/main.go
+go build -o pg-mcp .
 ```
