@@ -189,6 +189,7 @@ RUN go build cmd/app/main.go
 
 ENTRYPOINT [ "./main" ]
 ```
+
 ### Resultado
 ![Pasted image 20250108015147](https://github.com/user-attachments/assets/40081688-fe47-460f-8f6b-abbf3f103615)
 
@@ -218,6 +219,7 @@ COPY --from=build /app/main .
 
 ENTRYPOINT [ "./main" ]
 ```
+
 ### Resultado
 ![Pasted image 20250108015742](https://github.com/user-attachments/assets/5f7cfc33-4719-4057-9f50-2d3e832e321d)
 
