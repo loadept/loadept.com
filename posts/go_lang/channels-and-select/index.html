@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><title>Concurrencia en Go - Canales y Select en Acción</title><link rel="preload" href="/fonts/firacode.woff2" as="font" type="font/woff2" crossorigin="anonymous"><link rel="preload" href="/images/loadept-glitch.webp" as="image" type="image/webp" crossorigin="anonymous"><meta name="viewport" content="width=device-width"><meta name="description" content="Artículo sobre Concurrencia en Go - Canales y Select en Acción. Aprende más sobre Go, Concurrencia, Canales, Select en loadept.com"><meta name="keywords" content="Go, Concurrencia, Canales, Select"><meta name="author" content="loadept"><meta property="og:title" content="Concurrencia en Go - Canales y Select en Acción"><meta property="og:description" content="Artículo sobre Concurrencia en Go - Canales y Select en Acción. Aprende más sobre Go, Concurrencia, Canales, Select en loadept.com"><meta property="og:image" content="https://loadept.com/loadept.webp"><meta property="og:url" content="https://loadept.com/posts/go_lang/channels-and-select/"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Concurrencia en Go - Canales y Select en Acción"><meta name="twitter:description" content="Artículo sobre Concurrencia en Go - Canales y Select en Acción. Aprende más sobre Go, Concurrencia, Canales, Select en loadept.com"><meta name="twitter:image" content="https://loadept.com/loadept.webp"><meta name="twitter:image:alt" content="Concurrencia en Go - Canales y Select en Acción"><meta name="theme-color" content="#1f2329"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="https://loadept.com/posts/go_lang/channels-and-select/"><link rel="sitemap" href="/sitemap-index.xml"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.QW52Ox2j.js"></script><link rel="stylesheet" href="/_astro/_go_package_.Bo-keN1g.css"></head> <body class="min-h-screen flex flex-col"> <header class="flex justify-between gap-1 md:mx-30 my-3 top-3 sticky"> <ul class="flex list-none m-0 p-0 justify-evenly md:gap-12 gap-3 items-center"> <li> <a href="https://github.com/loadept" target="_blank" title="github" class="hover:text-[#528bff] transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="23" height="23" viewBox="0,0,256,256" class="hover:text-[#528bff] transition-colors"> <g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode:normal"> <g transform="scale(5.12,5.12)"> <path d="M17.791,46.836c0.711,-0.306 1.209,-1.013 1.209,-1.836v-5.4c0,-0.197 0.016,-0.402 0.041,-0.61c-0.014,0.004 -0.027,0.007 -0.041,0.01c0,0 -3,0 -3.6,0c-1.5,0 -2.8,-0.6 -3.4,-1.8c-0.7,-1.3 -1,-3.5 -2.8,-4.7c-0.3,-0.2 -0.1,-0.5 0.5,-0.5c0.6,0.1 1.9,0.9 2.7,2c0.9,1.1 1.8,2 3.4,2c2.487,0 3.82,-0.125 4.622,-0.555c0.934,-1.389 2.227,-2.445 3.578,-2.445v-0.025c-5.668,-0.182 -9.289,-2.066 -10.975,-4.975c-3.665,0.042 -6.856,0.405 -8.677,0.707c-0.058,-0.327 -0.108,-0.656 -0.151,-0.987c1.797,-0.296 4.843,-0.647 8.345,-0.714c-0.112,-0.276 -0.209,-0.559 -0.291,-0.849c-3.511,-0.178 -6.541,-0.039 -8.187,0.097c-0.02,-0.332 -0.047,-0.663 -0.051,-0.999c1.649,-0.135 4.597,-0.27 8.018,-0.111c-0.079,-0.5 -0.13,-1.011 -0.13,-1.543c0,-1.7 0.6,-3.5 1.7,-5c-0.5,-1.7 -1.2,-5.3 0.2,-6.6c2.7,0 4.6,1.3 5.5,2.1c1.699,-0.701 3.599,-1.101 5.699,-1.101c2.1,0 4,0.4 5.6,1.1c0.9,-0.8 2.8,-2.1 5.5,-2.1c1.5,1.4 0.7,5 0.2,6.6c1.1,1.5 1.7,3.2 1.6,5c0,0.484 -0.045,0.951 -0.11,1.409c3.499,-0.172 6.527,-0.034 8.204,0.102c-0.002,0.337 -0.033,0.666 -0.051,0.999c-1.671,-0.138 -4.775,-0.28 -8.359,-0.089c-0.089,0.336 -0.197,0.663 -0.325,0.98c3.546,0.046 6.665,0.389 8.548,0.689c-0.043,0.332 -0.093,0.661 -0.151,0.987c-1.912,-0.306 -5.171,-0.664 -8.879,-0.682c-1.665,2.878 -5.22,4.755 -10.777,4.974v0.031c2.6,0 5,3.9 5,6.6v5.4c0,0.823 0.498,1.53 1.209,1.836c9.161,-3.032 15.791,-11.672 15.791,-21.836c0,-12.682 -10.317,-23 -23,-23c-12.683,0 -23,10.318 -23,23c0,10.164 6.63,18.804 15.791,21.836z"></path> </g> </g> </svg> </a> </li> <li> <a href="https://www.linkedin.com/in/jesus-machaca-hancco-136119276" target="_blank" title="linkedin" class="hover:text-[#528bff] transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="23" height="23" viewBox="0,0,256,256" class="hover:text-[#528bff] transition-colors"> <g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode:normal"> <g transform="scale(5.12,5.12)"> <path d="M41,4h-32c-2.76,0 -5,2.24 -5,5v32c0,2.76 2.24,5 5,5h32c2.76,0 5,-2.24 5,-5v-32c0,-2.76 -2.24,-5 -5,-5zM17,20v19h-6v-19zM11,14.47c0,-1.4 1.2,-2.47 3,-2.47c1.8,0 2.93,1.07 3,2.47c0,1.4 -1.12,2.53 -3,2.53c-1.8,0 -3,-1.13 -3,-2.53zM39,39h-6c0,0 0,-9.26 0,-10c0,-2 -1,-4 -3.5,-4.04h-0.08c-2.42,0 -3.42,2.06 -3.42,4.04c0,0.91 0,10 0,10h-6v-19h6v2.56c0,0 1.93,-2.56 5.81,-2.56c3.97,0 7.19,2.73 7.19,8.26z"></path> </g> </g> </svg> </a> </li> <li> <a href="https://www.tiktok.com/@loadept" target="_blank" title="tiktok" class="hover:text-[#528bff] transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="23" height="23" viewBox="0,0,256,256" class="hover:text-[#528bff] transition-colors"> <g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode:normal"> <g transform="scale(5.12,5.12)"> <path d="M41,4h-32c-2.757,0 -5,2.243 -5,5v32c0,2.757 2.243,5 5,5h32c2.757,0 5,-2.243 5,-5v-32c0,-2.757 -2.243,-5 -5,-5zM37.006,22.323c-0.227,0.021 -0.457,0.035 -0.69,0.035c-2.623,0 -4.928,-1.349 -6.269,-3.388c0,5.349 0,11.435 0,11.537c0,4.709 -3.818,8.527 -8.527,8.527c-4.709,0 -8.527,-3.818 -8.527,-8.527c0,-4.709 3.818,-8.527 8.527,-8.527c0.178,0 0.352,0.016 0.527,0.027v4.202c-0.175,-0.021 -0.347,-0.053 -0.527,-0.053c-2.404,0 -4.352,1.948 -4.352,4.352c0,2.404 1.948,4.352 4.352,4.352c2.404,0 4.527,-1.894 4.527,-4.298c0,-0.095 0.042,-19.594 0.042,-19.594h4.016c0.378,3.591 3.277,6.425 6.901,6.685z"></path> </g> </g> </svg> </a> </li> <li> <a href="https://www.youtube.com/@load3pt" target="_blank" title="youtube"> <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="23" height="23" viewBox="0,0,256,256" class="hover:text-[#528bff] transition-colors"> <g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode:normal"> <g transform="scale(8.53333,8.53333)"> <path d="M15,4c-4.186,0 -9.61914,1.04883 -9.61914,1.04883l-0.01367,0.01563c-1.90652,0.30491 -3.36719,1.94317 -3.36719,3.93555v6v0.00195v5.99805v0.00195c0.00384,1.96564 1.4353,3.63719 3.37695,3.94336l0.00391,0.00586c0,0 5.43314,1.05078 9.61914,1.05078c4.186,0 9.61914,-1.05078 9.61914,-1.05078l0.00195,-0.00195c1.94389,-0.30554 3.37683,-1.97951 3.37891,-3.94727v-0.00195v-5.99805v-0.00195v-6c-0.00288,-1.96638 -1.43457,-3.63903 -3.37695,-3.94531l-0.00391,-0.00586c0,0 -5.43314,-1.04883 -9.61914,-1.04883zM12,10.39844l8,4.60156l-8,4.60156z"></path> </g> </g> </svg> </a> </li> </ul> <ul class="flex text-xs md:text-sm list-none m-0 p-0 justify-evenly md:gap-12 gap-3 items-center"> <li class="hover:text-[#528bff] transition-colors"> <a href="/" title="home">
+Inicio
+</a> </li> <li class="hover:text-[#528bff] transition-colors"> <a href="/about" title="about me">
+Sobre mí
+</a> </li> <li class="hover:text-[#528bff] transition-colors">
+Contacto
+</li> </ul> </header> <main class="grow mt-12">  <div class="container mx-auto px-4 max-w-4xl mb-20"> <a href="/" class="inline-flex items-center text-[#61afef] mb-8 hover:text-[#528bff] transition-colors"> <span class="text-2xl mr-1"></span> Volver al inicio </a> <article class="prose prose-invert prose-headings:text-[#e5c07b] prose-a:text-[#61afef] max-w-none"> <h1 class="text-4xl font-bold text-[#e5c07b] mb-4"> CONCURRENCIA EN GO - CANALES Y SELECT EN ACCIÓN </h1> <div class="flex flex-wrap items-center text-sm text-[#5c6370] mb-8 gap-y-2"> <div class="flex items-center mr-4"> <span class="text-2xl mr-2 text-[#c678dd]"></span> 10/03/2025 </div> <div class="flex items-center flex-wrap gap-2 mt-2 w-full"> <span class="text-2xl mr-1 text-[#98c379]"></span> <span class="text-xs px-2 py-1 rounded-md bg-[#282c34] text-[#abb2bf] border border-[#3e4451]"> Go </span><span class="text-xs px-2 py-1 rounded-md bg-[#282c34] text-[#abb2bf] border border-[#3e4451]"> Concurrencia </span><span class="text-xs px-2 py-1 rounded-md bg-[#282c34] text-[#abb2bf] border border-[#3e4451]"> Canales </span><span class="text-xs px-2 py-1 rounded-md bg-[#282c34] text-[#abb2bf] border border-[#3e4451]"> Select </span> </div> </div> <p>Un canal es un tipo de dato en <strong>Go</strong>, que se usa para comunicar <strong>goroutines</strong>. Es un tipo de dato primitivo del lenguaje, al igual que <code>slice</code>, <code>array</code> o <code>map</code>.</p>
+<p>Su propio nombre lo dice, es un canal o “tubería” por donde la información pasa de una <strong>goroutine</strong> a otra. Se pueden enviar o recibir valores de un tipo específico, porque los canales necesitan ser de un tipo de dato, ya sea <code>int</code>, <code>string</code>, etc.
+<img src="https://github.com/user-attachments/assets/2546f49a-144f-4076-b4f8-a4626cf51b13" alt="go-channel"></p>
+<h2 id="introducción-al-uso-de-canales">Introducción al uso de canales</h2>
+<p>Para trabajar con canales existe el nombre <code>chan</code>, que representa este tipo de dato.</p>
+<h2 id="cómo-se-crean">¿Cómo se crean?</h2>
+<p>Al igual que las estructuras conocidas, como <code>map</code> o <code>slice</code>, para crear un canal usamos la función <code>make</code> y asignamos un tipo de dato.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<blockquote>
+<p>¿Qué hará Println?
+De momento, <strong>fmt.Println(myChannel)</strong> solo imprimirá la dirección de memoria donde se encuentra el canal, algo similar a: <code>0xc000020060</code></p>
+</blockquote>
+<p>Acabamos de crear un canal (<code>myChannel</code>) de tipo entero (<code>int</code>). Este canal está diseñado para enviar y recibir datos de inmediato, ya que no tiene <strong>buffer</strong>.</p>
+<h2 id="qué-es-un-canal-con-o-sin-buffer">¿Qué es un canal con o sin buffer?</h2>
+<h3 id="canales-sin-buffer">Canales sin buffer</h3>
+<p>Un canal sin buffer necesita que un receptor esté listo para recibir los datos que se envían, y viceversa. Si no hay un receptor o emisor disponible, la goroutine se bloqueará, impidiendo que el programa avance. En casos donde haya una goroutine (<code>main</code>) o más, que donde estén intentado enviar/recibir datos sin emisor/receptor disponible se producirá un <code>panic deadlock</code>. Veamos un ejemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>El código anterior causará un error como este:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>fatal error: all goroutines are asleep - deadlock!</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>goroutine 1 [chan send]:</span></span>
+<span class="line"><span>main.main()</span></span>
+<span class="line"><span>	/home/user/Golang/channels.go:10 +0x2d</span></span>
+<span class="line"><span>exit status 2</span></span></code></pre>
+<p><img src="https://github.com/user-attachments/assets/3442da60-5e67-4462-be8b-240dccde1f02" alt="go-no-receptor-channel">
+<img src="https://github.com/user-attachments/assets/b38c86b1-9238-47aa-bf9f-3d166e931bb0" alt="arrow">
+<img src="https://github.com/user-attachments/assets/ded68c16-94ef-4afd-9f39-c1aa12231a0f" alt="go-lock-channel">
+Por defecto, los canales se crean sin buffer. Esto significa que necesitan que el receptor y el emisor estén sincronizados.</p>
+<h3 id="canales-con-buffer">Canales con buffer</h3>
+<p>Si queremos que un canal pueda almacenar valores temporalmente sin bloquearse, podemos asignarle un buffer:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Aquí, usamos <code>make</code> para crear un canal con un buffer con capacidad para 4 valores. Ahora el canal puede guardar los datos temporalmente hasta que alguien los reciba.
+<img src="https://github.com/user-attachments/assets/56e97802-ccca-4f70-b7d4-53bf89864246" alt="go-capacity-channel"></p>
+<h2 id="cómo-empezar-a-trabajar-con-canales">¿Cómo empezar a trabajar con canales?</h2>
+<p>Para trabajar con canales, usamos el operador <code>&#x3C;-</code>. Este operador es intuitivo:</p>
+<ul>
+<li>Si el canal está <strong>antes</strong> del operador, como en <code>&#x3C;-myChannel</code>, significa que estamos extrayendo datos del canal.</li>
+<li>Si el canal está <strong>después</strong>, como en <code>myChannel &#x3C;- 3</code>, significa que estamos enviando datos al canal.</li>
+</ul>
+<p>Ejemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#F97583"> func</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#6A737D">		// Enviar datos por el canal</span></span>
+<span class="line"><span style="color:#E1E4E8">		myChannel </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"><span style="color:#E1E4E8">	}()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	// Recibir datos enviados por el canal</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">myChannel)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<h2 id="canales-unidireccionales">Canales unidireccionales</h2>
+<p>En <strong>Go</strong>, también podemos usar canales unidireccionales mediante el operador <code>&#x3C;-</code>. Sin embargo, hay que tener cuidado, ya que es necesario comprender bien su uso para evitar confusiones.</p>
+<p>Imagina que necesitas un canal unidireccional, ya sea de solo envío o solo recepción de datos. Aquí es importante aplicar criterio, ya que declarar directamente un canal como unidireccional puede ser problemático. Veamos un ejemplo incorrecto:</p>
+<h3 id="ejemplo-incorrecto">Ejemplo incorrecto</h3>
+<ul>
+<li><strong>Solo envío</strong></li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<ul>
+<li><strong>Solo recepción</strong></li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>En estos casos, los canales son unidireccionales desde su declaración. Esto es inútil porque un canal necesita tanto un emisor como un receptor para funcionar. Si no hay uno de ellos, el programa no podrá utilizar el canal y se producirá un bloqueo o será simplemente inservible. Por lo tanto, esta forma de declarar canales unidireccionales no tiene utilidad.</p>
+<h3 id="forma-correcta-de-usar-canales-unidireccionales">Forma Correcta de Usar Canales Unidireccionales</h3>
+<p>La manera adecuada de trabajar con canales unidireccionales es convertir canales bidireccionales a unidireccionales según sea necesario. Esto se logra utilizando funciones que especifiquen si el canal será de solo envío o solo recepción.</p>
+<ul>
+<li><strong>Solo envío</strong>:
+Un canal de solo envío permite transmitir datos, pero no recibirlos:</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	message </span><span style="color:#F97583">:=</span><span style="color:#9ECBFF"> "Hello World"</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> message</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	// Convertimos el canal a uno de solo envío en la función</span></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	// Recibimos el dato desde el canal</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > Hello World</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<ul>
+<li><strong>Solo recepción</strong>
+Un canal de solo recepción permite recibir datos, pero no enviarlos:</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	message </span><span style="color:#F97583">:=</span><span style="color:#9ECBFF"> "Hello World"</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> message</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#6A737D">	// Recibimos el dato del canal y lo imprimimos</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">	// Convertimos el canal a uno de solo recepción en la función</span></span>
+<span class="line"><span style="color:#B392F0">	getMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > Hello World</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<blockquote>
+<p>Conversión de canales
+Hay que tener en cuenta que podemos convertir canales bidireccionales a unidirrecionales, pero no podemos hacerlo al revés, convertir canales unidireccionales a bidireccionales no es posible.</p>
+</blockquote>
+<blockquote>
+<p>Seguridad con canales unidireccionales
+Usar canales unidireccionales aumenta la seguridad y la claridad del código, ya que especifica exactamente cómo debe utilizarse el canal en cada función.</p>
+</blockquote>
+<blockquote>
+<p>Dato importante sobre el operador <code>&#x3C;-</code>
+Cuando usamos <code>&#x3C;-myChannel</code>, siempre extraemos datos del canal. Esto ocurre incluso si no los almacenamos en una variable:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">  ch </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">  go</span><span style="color:#F97583"> func</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">  	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"><span style="color:#E1E4E8">  }()</span></span>
+<span class="line"><span style="color:#F97583">  &#x3C;-</span><span style="color:#E1E4E8">ch</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+</blockquote>
+<p>Aquí se extrae los valores del canal, no importa si se almacena en una variable o no.</p>
+<h2 id="cierre-de-canales-close">Cierre de canales (close)</h2>
+<p>Una parte importante del uso de canales es el cierre, el cual se realiza con la función <code>close(channel)</code>.<br>
+Al cerrar un canal, hacemos que los emisores dejen de enviar datos. Además, notificamos a los receptores que ya no se enviarán más datos por ese canal.</p>
+<p>Ejemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	message </span><span style="color:#F97583">:=</span><span style="color:#9ECBFF"> "Hello World"</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> message</span></span>
+<span class="line"><span style="color:#B392F0">	close</span><span style="color:#E1E4E8">(ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > Hello World</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><strong>¿Qué sucede si un receptor intenta extraer datos de un canal cerrado?</strong>
+En este caso, el receptor obtendrá un valor nulo dependiendo del tipo de dato del canal. Por ejemplo:</p>
+<ul>
+<li>Si es <code>int</code>, obtendrá <code>0</code>.</li>
+<li>Si es <code>string</code>, obtendrá <code>""</code>.</li>
+<li>Si es <code>bool</code>, obtendrá <code>false</code>.</li>
+</ul>
+<p>Ejemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendNumber</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	number </span><span style="color:#F97583">:=</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> number</span></span>
+<span class="line"><span style="color:#B392F0">	close</span><span style="color:#E1E4E8">(ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getNumber</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">:=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendNumber</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getNumber</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > 5</span></span>
+<span class="line"><span style="color:#6A737D">	// > 0</span></span>
+<span class="line"><span style="color:#6A737D">	// > 0</span></span>
+<span class="line"><span style="color:#6A737D">	// ...</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><strong>¿Qué sucede si un emisor intenta enviar datos a un canal cerrado?</strong>
+Intentar enviar datos a un canal cerrado genera un <code>panic: send on closed channel</code>. Esto provoca que el programa falle de forma abrupta.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#B392F0">	close</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>El código anterior generará el siguiente error:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>panic: send on closed channel</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>goroutine 1 [running]:</span></span>
+<span class="line"><span>main.main()</span></span>
+<span class="line"><span>	/home/user/Golang/channels.go:9 +0x3a</span></span>
+<span class="line"><span>exit status 2</span></span></code></pre>
+<h2 id="gestión-de-errores--e-iteraciones">Gestión de errores  e iteraciones</h2>
+<p>En la sección anterior <a href="#cierre-de-canales-close">(Cierre de canales (close))</a>, vimos cómo detectar si un canal está cerrado o no. Esto se puede lograr mediante un segundo parámetro, denominado <code>ok</code>, que se obtiene al extraer datos del canal. Este parámetro nos indica si el canal sigue abierto.</p>
+<p>Ejemplo:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> "</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	message </span><span style="color:#F97583">:=</span><span style="color:#9ECBFF"> "Hello World"</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> message</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">		message, ok </span><span style="color:#F97583">:=</span><span style="color:#F97583"> &#x3C;-</span><span style="color:#E1E4E8">ch</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#F97583"> !</span><span style="color:#E1E4E8">ok {</span></span>
+<span class="line"><span style="color:#F97583">			break</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(message)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getMessage</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > Hello World</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>En este caso, <code>ok</code> devuelve un valor booleano:</p>
+<ul>
+<li><code>true</code>: si el canal está abierto.</li>
+<li><code>false</code>: si el canal está cerrado.</li>
+</ul>
+<h3 id="uso-de-bucle-for">Uso de bucle <code>for</code></h3>
+<p>Además de verificar si un canal está abierto, podemos iterar directamente sobre él. Esto es útil para enviar y recibir múltiples datos. Veamos un ejemplo donde usamos un bucle para enviar y recibir datos.</p>
+<p>Ejemplo con <code>ok</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">time</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendNumbers</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">:=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">		ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> i</span></span>
+<span class="line"><span style="color:#E1E4E8">		time.</span><span style="color:#B392F0">Sleep</span><span style="color:#E1E4E8">(time.Second)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getNumbers</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">		if</span><span style="color:#E1E4E8"> num, ok </span><span style="color:#F97583">:=</span><span style="color:#F97583"> &#x3C;-</span><span style="color:#E1E4E8">ch; ok {</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(num)		</span></span>
+<span class="line"><span style="color:#E1E4E8">		} </span><span style="color:#F97583">else</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"closed channel"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">			break</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendNumbers</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getNumbers</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > 1</span></span>
+<span class="line"><span style="color:#6A737D">	// > 2</span></span>
+<span class="line"><span style="color:#6A737D">	// > 3</span></span>
+<span class="line"><span style="color:#6A737D">	// ...</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Este es un ejemplo muy claro de la utilidad de los canales, pudimos enviar muchos datos cuanto sean posibles haciendo uso de un bucle y también pudimos recibirlos conforme van llegando usando otro bucle.</p>
+<p>Dijimos que podemos iterar sobre los canales, pero en el ejemplo anterior no lo hicimos. ¿Es mentira acaso? No, en realidad podemos iterar sobre canales.</p>
+<p>En <strong>Go</strong> existe la palabra reservada <code>range</code>, que se usa mucho para iterar sobre elementos, ya sea un <code>map</code> o un <code>array</code>. Pero también podemos usarla para iterar sobre canales. De hecho, iterar canales con ayuda de <code>range</code> es mucho más fácil. Veamos el código:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">time</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendNumbers</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">:=</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;=</span><span style="color:#79B8FF"> 10</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">		ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8"> i</span></span>
+<span class="line"><span style="color:#E1E4E8">		time.</span><span style="color:#B392F0">Sleep</span><span style="color:#E1E4E8">(time.Second)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getNumbers</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> num </span><span style="color:#F97583">:=</span><span style="color:#F97583"> range</span><span style="color:#E1E4E8"> ch {</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(num)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendNumbers</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getNumbers</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > 1</span></span>
+<span class="line"><span style="color:#6A737D">	// > 2</span></span>
+<span class="line"><span style="color:#6A737D">	// > 3</span></span>
+<span class="line"><span style="color:#6A737D">	// ...</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Como te podrás dar cuenta, la función es mucho más corta y ya no se hace uso de un <code>if</code> para verificar si el canal está abierto o no. Esto se debe a que, al usar <code>for</code> y <code>range</code> para la iteración, el mecanismo interno de <code>range</code> se encarga de evaluar si el canal está cerrado. Si un canal se cierra y deja de tener valores disponibles, <code>range</code> rompe automáticamente el ciclo y deja de iterar sobre el canal. Es como hacer un <code>break</code> dentro de un <code>if</code>, pero de una manera más sencilla.</p>
+<h3 id="uso-de-select">Uso de <code>select</code></h3>
+<p>El uso de <code>select</code> también es importante al manejar canales. Una gran ventaja de <code>select</code> es que podemos escuchar múltiples canales. Pero no solo eso, <code>select</code> también nos permite enviar datos a varios canales. Veamos cómo se utiliza:</p>
+<ul>
+<li><strong>Recibir datos</strong></li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">time</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendNumber</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 10</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#9ECBFF"> "Hello"</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getValue</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">ch2</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">		select</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">		case</span><span style="color:#E1E4E8"> num </span><span style="color:#F97583">:=</span><span style="color:#F97583"> &#x3C;-</span><span style="color:#E1E4E8">ch:</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"a number was obtained:"</span><span style="color:#E1E4E8">, num)</span></span>
+<span class="line"><span style="color:#F97583">			return</span></span>
+<span class="line"><span style="color:#F97583">		case</span><span style="color:#E1E4E8"> message, ok </span><span style="color:#F97583">:=</span><span style="color:#F97583"> &#x3C;-</span><span style="color:#E1E4E8">ch2:</span></span>
+<span class="line"><span style="color:#F97583">			if</span><span style="color:#F97583"> !</span><span style="color:#E1E4E8">ok {</span></span>
+<span class="line"><span style="color:#F97583">				return</span></span>
+<span class="line"><span style="color:#E1E4E8">			}</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"a message was obtained:"</span><span style="color:#E1E4E8">, num)</span></span>
+<span class="line"><span style="color:#F97583">			return</span></span>
+<span class="line"><span style="color:#F97583">		default</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"waiting for some signal on the channels"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">			time.</span><span style="color:#B392F0">Sleep</span><span style="color:#E1E4E8">(time.Second)</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	myOtherChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendNumbers</span><span style="color:#E1E4E8">(myChannel)</span></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> sendMessage</span><span style="color:#E1E4E8">(myOtherChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	getNumbers</span><span style="color:#E1E4E8">(myChannel, myOtherChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// > a number was obtained: 10</span></span>
+<span class="line"><span style="color:#6A737D">	// > a message was obtained: Hello</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<ul>
+<li><strong>Enviar datos</strong></li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">package</span><span style="color:#B392F0"> main</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">fmt</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#9ECBFF">	"</span><span style="color:#B392F0">time</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#E1E4E8">)  </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> getValues</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">ch2</span><span style="color:#F97583"> chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">ch)</span></span>
+<span class="line"><span style="color:#E1E4E8">	fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x3C;-</span><span style="color:#E1E4E8">ch2)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendValues</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">ch2</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">:=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">		select</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">		case</span><span style="color:#E1E4E8"> ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the number was sent successfully"</span><span style="color:#E1E4E8">)	</span></span>
+<span class="line"><span style="color:#F97583">		case</span><span style="color:#E1E4E8"> ch2 </span><span style="color:#F97583">&#x3C;-</span><span style="color:#9ECBFF"> "Hello"</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the message was sent successfully"</span><span style="color:#E1E4E8">)	</span></span>
+<span class="line"><span style="color:#F97583">		default</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">			fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the channels are closed or full"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">		}</span></span>
+<span class="line"><span style="color:#E1E4E8">		time.</span><span style="color:#B392F0">Sleep</span><span style="color:#E1E4E8">(time.Second)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#E1E4E8">	myChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	myOtherChannel </span><span style="color:#F97583">:=</span><span style="color:#B392F0"> make</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">	go</span><span style="color:#B392F0"> getValues</span><span style="color:#E1E4E8">(myChannel, myOtherChannel)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">	sendValues</span><span style="color:#E1E4E8">(myChannel, myOtherChannel)</span></span>
+<span class="line"><span style="color:#6A737D">	// the message was sent successfully</span></span>
+<span class="line"><span style="color:#6A737D">	// the number was sent successfully</span></span>
+<span class="line"><span style="color:#6A737D">	// 2</span></span>
+<span class="line"><span style="color:#6A737D">	// Hello</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>En estos ejemplos vimos cómo, con <code>select</code>, pudimos enviar o recibir datos a múltiples canales. <code>Select</code> es una gran herramienta porque nos ofrece mucha más flexibilidad y control. Además, no solo podemos usarlo con un <code>for</code>; también es posible utilizar <code>select</code> de forma independiente, como en este caso:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#F97583">func</span><span style="color:#B392F0"> sendValues</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">ch</span><span style="color:#F97583"> chan&#x3C;-</span><span style="color:#F97583"> int</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">ch2</span><span style="color:#F97583"> &#x3C;-chan</span><span style="color:#F97583"> string</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">	select</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">	case</span><span style="color:#E1E4E8"> ch </span><span style="color:#F97583">&#x3C;-</span><span style="color:#79B8FF"> 2</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the number was sent successfully"</span><span style="color:#E1E4E8">)	</span></span>
+<span class="line"><span style="color:#F97583">	case</span><span style="color:#E1E4E8"> message </span><span style="color:#F97583">:=</span><span style="color:#F97583"> &#x3C;-</span><span style="color:#E1E4E8">ch2:</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the message was get successfully:"</span><span style="color:#E1E4E8">, message)	</span></span>
+<span class="line"><span style="color:#F97583">	default</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">		fmt.</span><span style="color:#B392F0">Println</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"the channels are closed or full"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">	}</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Otra ventaja es que también podemos combinar <code>select</code> con las distintas estructuras de control disponibles en <strong>Go</strong>, como <code>if</code>, <code>switch</code>, etc. Esto aumenta aún más su versatilidad al manejar canales.</p>
+<blockquote>
+<p>Espera de bajo consumo
+Cuando se usa <code>select</code> junto con un <code>for loop</code> infinito, el uso de <code>select</code> puede llegar a ser muy eficiente, esto porque cuando <code>select</code> está esperando que algún canal tenga datos, el runtime de ><strong>Go</strong> pone la goroutine en un estado de espera (<strong>waiting</strong>). Lo cual hace que que la goroutine no consuma ciclos de CPU mientras está esperando, esto hace que su uso sea muy eficiente.</p>
+</blockquote> </article> </div>  </main> <footer class="py-5 bg-linear-to-t from-[#282c34] via-90% via-[#282c34] to-[#1f2329]"> <div class="container mx-auto px-4"> <div class="flex items-center justify-between text-center"> <p class="text-xs text-[#abb2bf]"> <span class="text-[#c678dd]">loadept</span> <span class="text-[#e06c75]">-</span> 2026 </p> <a href="https://github.com/loadept/loadept.com" target="_blank" title="source" class="text-xs"> <span class="outline-none text-[#e06c75] border-b">Código fuente</span> </a> </div> </div> </footer> </body></html>
