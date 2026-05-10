@@ -37,7 +37,7 @@ func main() {
 	}
 	webhookSecret := os.Getenv("WEBHOOK_SECRET")
 	if webhookSecret == "" {
-		log.Fatalf("env var WEBHOOK is required")
+		log.Fatalf("env var WEBHOOK_SECRET is required")
 	}
 	webhook := os.Getenv("WEBHOOK")
 	if webhook == "" {
