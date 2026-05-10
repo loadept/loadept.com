@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/loadept/website/internal/logger"
+	"github.com/loadept/website/internal/middleware"
 	"github.com/loadept/website/internal/storage"
 )
 
@@ -26,7 +26,7 @@ func NewShortHandler(s *storage.ShortURLStorage) *shortHandler {
 
 func (h *shortHandler) RedirectURL(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	le := logger.FromContext(ctx)
+	le := middleware.LogFromCtx(ctx)
 	shortCode := r.PathValue("code")
 
 	cacheMu.RLock()

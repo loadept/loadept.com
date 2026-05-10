@@ -1,5 +1,4 @@
-// Package logger provides middleware for adding logs throughout the application
-package logger
+package middleware
 
 import (
 	"context"
@@ -19,16 +18,6 @@ type contextKey struct{}
 
 var logEntryKey = contextKey{}
 
-type resWriter struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-func (rw *resWriter) WriteHeader(statusCode int) {
-	rw.statusCode = statusCode
-	rw.ResponseWriter.WriteHeader(statusCode)
-}
-
 type LogEntry struct {
 	Timestamp  string `json:"timestamp"`
 	Method     string `json:"method,omitempty"`
@@ -41,16 +30,15 @@ type LogEntry struct {
 	RayID      string `json:"ray_id,omitempty"`
 }
 
-func Middleware(next http.Handler) http.Handler {
+func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		rw := &resWriter{ResponseWriter: w, statusCode: http.StatusOK}
+		rw := &responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
 
-		// log entry (addr, country, rayid will be obtained from headers set by Cloudflare)
 		le := &LogEntry{
 			Timestamp: time.Now().Format(time.RFC3339),
 			Method:    r.Method,
 			Path:      r.URL.Path,
-			Addr:      r.Header.Get("CF-Connecting-IP"),
+			Addr:      getClientIP(r),
 			Country:   r.Header.Get("CF-IPCountry"),
 			RayID:     r.Header.Get("CF-Ray"),
 		}
@@ -62,7 +50,7 @@ func Middleware(next http.Handler) http.Handler {
 	})
 }
 
-func FromContext(ctx context.Context) *LogEntry {
+func LogFromCtx(ctx context.Context) *LogEntry {
 	le := ctx.Value(logEntryKey).(*LogEntry)
 	return le
 }

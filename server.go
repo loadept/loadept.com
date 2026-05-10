@@ -14,7 +14,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/loadept/website/internal/logger"
+	"github.com/loadept/website/internal/middleware"
 	"github.com/loadept/website/internal/short"
 	"github.com/loadept/website/internal/storage"
 	"zombiezen.com/go/sqlite"
@@ -35,6 +35,14 @@ func main() {
 	if addr == "" {
 		log.Fatalf("env var ADDR is required")
 	}
+	webhookSecret := os.Getenv("WEBHOOK_SECRET")
+	if webhookSecret == "" {
+		log.Fatalf("env var WEBHOOK is required")
+	}
+	webhook := os.Getenv("WEBHOOK")
+	if webhook == "" {
+		log.Fatalf("env var WEBHOOK is required")
+	}
 
 	pool, err := sqlitex.NewPool(db, sqlitex.PoolOptions{
 		PoolSize: 3,
@@ -50,6 +58,12 @@ func main() {
 	defer pool.Close()
 
 	mux := http.NewServeMux()
+	visit := middleware.NewVisitsMiddleware(
+		&http.Client{Timeout: 10 * time.Second},
+		webhookSecret,
+		webhook,
+	)
+
 	s, err := storage.NewShortURLStorage(pool)
 	fatalIfErr(err)
 
@@ -58,11 +72,11 @@ func main() {
 	fatalIfErr(err)
 
 	mux.Handle("GET /", http.FileServerFS(&neuteredFS{fs: subFS}))
-	mux.HandleFunc("GET /s/{code}", shortHandler.RedirectURL)
+	mux.Handle("GET /s/{code}", visit(http.HandlerFunc(shortHandler.RedirectURL)))
 
 	server := http.Server{
 		Addr:         addr,
-		Handler:      logger.Middleware(mux),
+		Handler:      middleware.Logger(mux),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
