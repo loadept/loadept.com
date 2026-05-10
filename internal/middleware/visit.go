@@ -28,8 +28,6 @@ type Meta struct {
 func NewVisitsMiddleware(client *http.Client, secret, webhook string) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			le := LogFromCtx(r.Context())
-
 			rr := &responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
 			next.ServeHTTP(rr, r)
 
@@ -38,26 +36,24 @@ func NewVisitsMiddleware(client *http.Client, secret, webhook string) Middleware
 			}
 
 			ip := getClientIP(r)
-			location, err := getIPInfo(client, ip)
-			if err != nil {
-				le.Error = fmt.Sprintf("failed to get ip location: %v", err)
-				return
-			}
-
-			body := RequestBody{
-				Source: "loadept",
-				Event:  "visit",
-				Meta: Meta{
-					Path:    r.URL.Path,
-					IP:      ip,
-					Country: location.Country,
-					City:    location.City,
-				},
-			}
-			if err := sendWebhook(client, body, secret, webhook); err != nil {
-				le.Error = fmt.Sprintf("failed to send webhook: %v", err)
-				return
-			}
+			path := r.URL.Path
+			go func() {
+				location, err := getIPInfo(client, ip)
+				if err != nil {
+					return
+				}
+				body := RequestBody{
+					Source: "loadept",
+					Event:  "visit",
+					Meta: Meta{
+						Path:    path,
+						IP:      ip,
+						Country: location.Country,
+						City:    location.City,
+					},
+				}
+				sendWebhook(client, body, secret, webhook)
+			}()
 		})
 	}
 }
