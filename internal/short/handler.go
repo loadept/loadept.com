@@ -49,7 +49,7 @@ func (h *shortHandler) RedirectURL(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
-		http.Error(w, "500 internal error", http.StatusInternalServerError)
+		ctx.String(http.StatusInternalServerError, "500 internal error")
 		return
 	}
 	cacheMu.Lock()

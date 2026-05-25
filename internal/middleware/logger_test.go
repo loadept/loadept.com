@@ -5,19 +5,22 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/loadept/pirca"
 	"github.com/loadept/website/internal/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMiddleware_SetsLogEntry(t *testing.T) {
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		le := middleware.LogFromCtx(r.Context())
+		ctx := pirca.Ctx(r)
+		val, _ := ctx.Get("logentry")
+		le := val.(*middleware.LogEntry)
 		assert.NotNil(t, le)
 		assert.Equal(t, "GET", le.Method)
 		assert.Equal(t, "/test", le.Path)
 		w.WriteHeader(http.StatusOK)
 	})
-	handler := middleware.Logger(next)
+	handler := pirca.New()(middleware.Logger(next))
 
 	req := httptest.NewRequest("GET", "/test", nil)
 	rec := httptest.NewRecorder()
@@ -30,7 +33,7 @@ func TestMiddleware_CapturesCodes(t *testing.T) {
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	})
-	handler := middleware.Logger(next)
+	handler := pirca.New()(middleware.Logger(next))
 
 	req := httptest.NewRequest("GET", "/notfound", nil)
 	rec := httptest.NewRecorder()
@@ -41,11 +44,13 @@ func TestMiddleware_CapturesCodes(t *testing.T) {
 
 func TestMiddleware_CaptureCloudflareHeaders(t *testing.T) {
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		le := middleware.LogFromCtx(r.Context())
+		ctx := pirca.Ctx(r)
+		val, _ := ctx.Get("logentry")
+		le := val.(*middleware.LogEntry)
 		assert.Equal(t, "1.2.3.4", le.Addr)
 		assert.Equal(t, "PE", le.Country)
 	})
-	handler := middleware.Logger(next)
+	handler := pirca.New()(middleware.Logger(next))
 
 	req := httptest.NewRequest("GET", "/", nil)
 	req.Header.Set("CF-Connecting-IP", "1.2.3.4")
