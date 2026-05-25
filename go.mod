@@ -1,8 +1,9 @@
 module github.com/loadept/website
 
-go 1.26.0
+go 1.26.3
 
 require (
+	github.com/loadept/pirca v1.1.0
 	go.yaml.in/yaml/v4 v4.0.0-rc.4
 	zombiezen.com/go/sqlite v1.4.2
 )

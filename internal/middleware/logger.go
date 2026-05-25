@@ -7,6 +7,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/loadept/pirca"
 )
 
 var (
@@ -25,15 +27,14 @@ type LogEntry struct {
 	StatusCode int    `json:"status_code,omitempty"`
 	CacheHit   bool   `json:"cache_hit,omitempty"`
 	Error      string `json:"error,omitempty"`
-	Addr       string `json:"ip,omitempty"`
+	Addr       string `json:"addr,omitempty"`
 	Country    string `json:"country,omitempty"`
 	RayID      string `json:"ray_id,omitempty"`
 }
 
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		rw := &responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
-
+		ctx := pirca.Ctx(r)
 		le := &LogEntry{
 			Timestamp: time.Now().Format(time.RFC3339),
 			Method:    r.Method,
@@ -44,9 +45,9 @@ func Logger(next http.Handler) http.Handler {
 		}
 		defer writeLog(le)
 
-		ctx := context.WithValue(r.Context(), logEntryKey, le)
-		next.ServeHTTP(rw, r.WithContext(ctx))
-		le.StatusCode = rw.statusCode
+		ctx.Set("logentry", le)
+		next.ServeHTTP(w, r)
+		le.StatusCode = ctx.GetStatus()
 	})
 }
 

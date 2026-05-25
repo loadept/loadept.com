@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/loadept/pirca"
 	"github.com/loadept/website/internal/middleware"
 	"github.com/loadept/website/internal/storage"
 )
@@ -25,15 +26,18 @@ func NewShortHandler(s *storage.ShortURLStorage) *shortHandler {
 }
 
 func (h *shortHandler) RedirectURL(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	le := middleware.LogFromCtx(ctx)
-	shortCode := r.PathValue("code")
+	ctx := pirca.Ctx(r)
+
+	val, _ := ctx.Get("logentry")
+	le := val.(*middleware.LogEntry)
+
+	shortCode := ctx.Param("code")
 
 	cacheMu.RLock()
 	if cachedURL, ok := cache[shortCode]; ok {
 		cacheMu.RUnlock()
 		le.CacheHit = true
-		http.Redirect(w, r, cachedURL, http.StatusFound)
+		ctx.Redirect(http.StatusFound, cachedURL)
 		return
 	}
 	cacheMu.RUnlock()
@@ -52,5 +56,5 @@ func (h *shortHandler) RedirectURL(w http.ResponseWriter, r *http.Request) {
 	cache[shortCode] = originalURL
 	cacheMu.Unlock()
 
-	http.Redirect(w, r, originalURL, http.StatusFound)
+	ctx.Redirect(http.StatusFound, originalURL)
 }

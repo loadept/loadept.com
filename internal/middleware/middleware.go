@@ -9,16 +9,6 @@ import (
 
 type Middleware func(http.Handler) http.Handler
 
-type responseRecorder struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-func (rw *responseRecorder) WriteHeader(statusCode int) {
-	rw.statusCode = statusCode
-	rw.ResponseWriter.WriteHeader(statusCode)
-}
-
 func getClientIP(r *http.Request) string {
 	if ip := r.Header.Get("CF-Connecting-IP"); ip != "" {
 		return ip

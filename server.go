@@ -14,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/loadept/pirca"
 	"github.com/loadept/website/internal/middleware"
 	"github.com/loadept/website/internal/short"
 	"github.com/loadept/website/internal/storage"
@@ -76,7 +77,7 @@ func main() {
 
 	server := http.Server{
 		Addr:         addr,
-		Handler:      middleware.Logger(mux),
+		Handler:      pirca.New()(middleware.Logger(mux)),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,

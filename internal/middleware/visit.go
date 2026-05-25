@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/loadept/pirca"
 )
 
 type RequestBody struct {
@@ -28,10 +30,10 @@ type Meta struct {
 func NewVisitsMiddleware(client *http.Client, secret, webhook string) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			rr := &responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
-			next.ServeHTTP(rr, r)
+			ctx := pirca.Ctx(r)
+			next.ServeHTTP(w, r)
 
-			if rr.statusCode != http.StatusMovedPermanently && rr.statusCode != http.StatusFound {
+			if ctx.GetStatus() != http.StatusMovedPermanently && ctx.GetStatus() != http.StatusFound {
 				return
 			}
 
