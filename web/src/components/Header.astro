@@ -2,7 +2,7 @@
 import {
   Download,
 } from "lucide-preact"
-import { ThemeButton } from "./ThemeButton"
+import ThemeButton from "./ThemeButton.astro"
 
 ---
 
@@ -16,7 +16,7 @@ import { ThemeButton } from "./ThemeButton"
         <span class="text-2xl font-bold">loadept</span>
       </a>
       <div class="flex items-center">
-        <ThemeButton client:load />
+        <ThemeButton />
         <a
           href="https://assets.loadept.com/cv.pdf"
 	  target="_blank"

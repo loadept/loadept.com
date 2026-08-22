@@ -1,8 +1,8 @@
 ---
 title: Patron Command en Go
-date: 2026-03-05
+date: 2025-03-12
+updated: 2026-03-05
 keywords: [design-pattern, command-pattern, go, golang, development, diseño, programación, patrón]
-category: Go-lang
 ---
 
 # Definición

@@ -16,12 +16,13 @@
     "@astrojs/sitemap": "3.7.2",
     "@tailwindcss/vite": "4.1.17",
     "astro": "5.16.2",
-    "axios": "1.14.0",
     "lucide-preact": "1.7.0",
     "preact": "10.29.0",
     "tailwindcss": "4.2.2"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "0.5.19"
+    "@astrojs/check": "0.9.10",
+    "@tailwindcss/typography": "0.5.19",
+    "typescript": "6"
   }
 }

@@ -2,7 +2,6 @@
 title: Dockerización en Node.js
 date: 2025-12-14
 keywords: [Docker, Node.js, Dockerfile, Multi-stage builds, npm ci, TypeScript, Vite, Next.js]
-category: Node.js
 ---
 
 Al igual que en **Go** u otros lenguajes, una dockerización con buenas prácticas en **Node.js** puede tener impactos muy positivos. Dockerizar aplicaciones en **Node.js** es un tanto diferente a como lo sería en **Go**, ya que podemos dockerizar aplicaciones que solo usen **JavaScript** (lo cual es muy fácil de hacer) o aplicaciones que necesiten **transpilarse**, como las desarrolladas con **TypeScript**. También podemos dockerizar aplicaciones frontend creadas con herramientas como **Vite**, **Next.js**, **Angular** o **Webpack**, donde es necesario un paso de construcción que puede beneficiarse del uso de **multi-stage builds**.

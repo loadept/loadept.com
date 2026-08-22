@@ -1,8 +1,8 @@
 ---
 title: Dockerización en Go
-date: 2026-03-05
+date: 2025-06-09
+updated: 2026-03-05
 keywords: [binario, go, golang, programacion, development, docker]
-category: Go-lang
 ---
 
 Conocer cómo dockerizar de manera correcta en **Go** es muy importante, ya que puede tener un impacto positivo en el rendimiento, el consumo de recursos y el almacenamiento. Entender aspectos como **multi-stage builds** o el uso de versiones ligeras de las imágenes puede ser muy útil.

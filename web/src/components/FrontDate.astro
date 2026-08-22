@@ -1,0 +1,14 @@
+---
+import formatDate from "../lib/formatDate"
+
+interface Props {
+  date: Date
+  updated?: Date | undefined
+}
+const { date, updated } = Astro.props
+---
+
+<div class="flex items-center mr-4 text-muted-foreground">
+  Publicado {formatDate(date)}
+  {updated && <span> · Actualizado {formatDate(updated)}</span>}
+</div>

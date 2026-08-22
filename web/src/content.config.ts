@@ -2,12 +2,16 @@ import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
 const posts = defineCollection({
-  loader: glob({ pattern: 'posts/**/*.md', base: './src/content' }),
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content',
+    generateId: ({ entry }) => entry.replace(/\.md$/, '')
+  }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    keywords: z.array(z.string()),
-    category: z.string().optional()
+    updated: z.coerce.date().optional(),
+    keywords: z.array(z.string())
   })
 })
 

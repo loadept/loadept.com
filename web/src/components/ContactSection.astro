@@ -1,8 +1,6 @@
 ---
-import type { ContactLink } from "../types/home"
-
 interface Props {
-  links: ContactLink[]
+  links: { label: string; text: string; url: string }[]
 }
 
 const { links } = Astro.props

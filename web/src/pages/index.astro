@@ -1,61 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import Intro from '../modules/home/components/intro.astro'
-import { Content } from '../modules/home/components/Content'
-import type { Post, Resources, ContactLink } from '../modules/home/types/home'
-import type { FrontMatter } from '../modules/shared/types/frontmatter'
-import ContactSection from '../modules/home/components/ContactSection.astro'
+import About from '../components/About.astro'
+import SoftwareSection from '../components/SoftwareSection.astro'
+import { NotesTree } from '../components/NotesTree'
+import ContactSection from '../components/ContactSection.astro'
+import { getCollection } from 'astro:content'
+import { toPost } from '../lib/posts'
 
-const allPosts = import.meta.glob('../content/posts/**/*.md', { eager: true })
-const posts: Post[] = Object.entries(allPosts)
-  .map(([filePath, post]: [string, any]) => {
-  const slug = filePath.replace('../content/posts/', '').replace('.md', '').trim()
-	const frontmatter: FrontMatter = post.frontmatter
+const posts = (await getCollection('posts')).map(toPost).sort((a, b) => (
+  a.slug.localeCompare(b.slug)
+))
 
-	return {
-		slug: slug,
-		title: frontmatter.title,
-		date: frontmatter.date,
-		category: frontmatter.category,
-	}
-})
-const categories: string[] = Array.from(
-	new Map(posts.map(p => ([p.category, p.category]))).values()
-)
-
-const resources: Resources[] = [
-	{
-		name: "Software",
-		items: [
-			{
-				label: "db-mcp",
-				description: "Servidor MCP para multiples bases de datos (solo lectura).",
-				url: "https://loadept.com/s/uEZQ",
-			},
-			{
-				label: "qtheme",
-				description: "Herramienta para gestionar temas del WM qtile.",
-				url: "https://loadept.com/s/qmvD",
-			},
-      {
-        label: "cursor-live",
-        description: "Mira cómo funcionan los websockets con este experimento.",
-        url: "https://live.loadept.com"
-      },
-      {
-        label: "ipseek",
-        description: "API gratuita para obtener la información y localización de una IP.",
-        url: "https://ipseek.space"
-      },
-		],
-	},
-  {
-    name: "Notas",
-    items: []
-  }
-]
-
-const links: ContactLink = [
+const links = [
   {
     label: "Email",
     text: "hi@loadept.com",
@@ -79,19 +35,22 @@ const links: ContactLink = [
 ]
 ---
 
-<Layout 
+<Layout
 	title="loadept"
 	description="Mi sitio web personal, comparto notas y recursos relacionados con el desarrollo de software :) ."
 	keywords="notas, go, linux, backend, devops, software development"
 >
 	<div class="max-w-2xl mx-auto px-6 py-12">
-		<Intro />
-		<Content
-			client:load
-			categories={categories}
-			posts={posts}
-			resources={resources}
-		/>
+		<About />
+		<section class="mt-15 mb-16">
+			<h2 class="flex items-center text-2xl font-bold mb-6 border-b border-border pb-3">
+				Contenido
+			</h2>
+			<div class="space-y-4">
+				<SoftwareSection />
+				<NotesTree client:load posts={posts} />
+			</div>
+		</section>
 		<ContactSection links={links} />
 	</div>
 </Layout>
