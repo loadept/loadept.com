@@ -12,7 +12,7 @@
         "axios": "1.14.0",
         "lucide-preact": "1.7.0",
         "preact": "10.29.0",
-        "tailwindcss": "4.2.2",
+        "tailwindcss": "4.3.3",
       },
       "devDependencies": {
         "@tailwindcss/typography": "0.5.19",
@@ -850,7 +850,7 @@
 
     "svgo": ["svgo@4.0.0", "", { "dependencies": { "commander": "11.1.0", "css-select": "5.2.2", "css-tree": "3.1.0", "css-what": "6.2.2", "csso": "5.0.5", "picocolors": "1.1.1", "sax": "1.4.3" }, "bin": "./bin/svgo.js" }, "sha512-VvrHQ+9uniE+Mvx3+C9IEe/lWasXCU0nXMY2kZeLrHNICuRiC8uMPyM14UEaMOFA5mhyQqEkB02VoQ16n3DLaw=="],
 
-    "tailwindcss": ["tailwindcss@4.2.2", "", {}, "sha512-KWBIxs1Xb6NoLdMVqhbhgwZf2PGBpPEiwOqgI4pFIYbNTfBXiKYyWoTsXgBQ9WFg/OlhnvHaY+AEpW7wSmFo2Q=="],
+    "tailwindcss": ["tailwindcss@4.3.3", "", {}, "sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ=="],
 
     "tapable": ["tapable@2.3.0", "", {}, "sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg=="],
 
