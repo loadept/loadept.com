@@ -1,16 +1,19 @@
 package short
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
 	"sync"
 
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/sync/singleflight"
 )
 
 var (
 	cacheMu sync.RWMutex
+	sfGroup singleflight.Group
 	cache   = make(map[string]string)
 )
 
@@ -23,18 +26,35 @@ func NewHandler(r *Repo) *Handler {
 }
 
 func (h *Handler) RedirectURL(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	shortCode := chi.URLParam(r, "code")
 
 	cacheMu.RLock()
-	if cachedURL, ok := cache[shortCode]; ok {
-		cacheMu.RUnlock()
+	cachedURL, ok := cache[shortCode]
+	cacheMu.RUnlock()
+	if ok {
 		http.Redirect(w, r, cachedURL, http.StatusFound)
 		return
 	}
-	cacheMu.RUnlock()
 
-	originalURL, err := h.r.GetURL(ctx, shortCode)
+	v, err, _ := sfGroup.Do(shortCode, func() (any, error) {
+		cacheMu.RLock()
+		cachedURL, ok := cache[shortCode]
+		cacheMu.RUnlock()
+		if ok {
+			return cachedURL, nil
+		}
+
+		originalURL, err := h.r.GetURL(context.Background(), shortCode)
+		if err != nil {
+			return nil, err
+		}
+
+		cacheMu.Lock()
+		defer cacheMu.Unlock()
+		cache[shortCode] = originalURL
+
+		return originalURL, nil
+	})
 	if err != nil {
 		slog.Error("failed to get URL from database", "err", err)
 		if errors.Is(err, ErrShortURLNotFound) {
@@ -44,9 +64,6 @@ func (h *Handler) RedirectURL(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("500 internal error"))
 		return
 	}
-	cacheMu.Lock()
-	cache[shortCode] = originalURL
-	cacheMu.Unlock()
 
-	http.Redirect(w, r, originalURL, http.StatusFound)
+	http.Redirect(w, r, v.(string), http.StatusFound)
 }
