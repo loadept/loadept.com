@@ -34,8 +34,9 @@ jobs:
       - name: Check format
         run: |
           files=$(gofumpt -l .)
-          if [ -n "$file" ]; then
+          if [ -n "$files" ]; then
             gofumpt -d $files
+            exit 1
           else
             echo "everything is in order!"
           fi
