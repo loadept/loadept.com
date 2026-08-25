@@ -8,7 +8,7 @@ interface Props {
 const { date, updated } = Astro.props
 ---
 
-<div class="flex items-center mr-4 text-muted-foreground">
-  Publicado {formatDate(date)}
-  {updated && <span> · Actualizado {formatDate(updated)}</span>}
+<div class="flex flex-col gap-y-1">
+  <span>Publicado {formatDate(date)}</span>
+  {updated && <span>Actualizado {formatDate(updated)}</span>}
 </div>
