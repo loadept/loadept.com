@@ -87,13 +87,14 @@ func main() {
 		},
 	}); err != nil {
 		if sqlite.ErrCode(err) == sqlite.ResultConstraintUnique {
-			if strings.Contains(err.Error(), "short_urls.short_code") {
+			switch {
+			case strings.Contains(err.Error(), "short_urls.short_code"):
 				log.Fatal("the provided short code already exists")
-			}
-			if strings.Contains(err.Error(), "short_urls.name") {
+			case strings.Contains(err.Error(), "short_urls.name"):
 				log.Fatal("the provided name already exists")
+			default:
+				log.Fatal("unexpected constraint violation")
 			}
-			log.Fatal("unexpected constraint violation")
 		}
 		log.Fatalf("failed to insert short url: %v", err)
 	}

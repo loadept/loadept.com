@@ -2,59 +2,51 @@ package short
 
 import (
 	"errors"
-	"fmt"
+	"log/slog"
 	"net/http"
 	"sync"
 
-	"github.com/loadept/pirca"
-	"github.com/loadept/website/internal/middleware"
-	"github.com/loadept/website/internal/storage"
+	"github.com/go-chi/chi/v5"
 )
 
-// local cache vars
 var (
 	cacheMu sync.RWMutex
 	cache   = make(map[string]string)
 )
 
-type shortHandler struct {
-	s *storage.ShortURLStorage
+type Handler struct {
+	r *Repo
 }
 
-func NewShortHandler(s *storage.ShortURLStorage) *shortHandler {
-	return &shortHandler{s: s}
+func NewHandler(r *Repo) *Handler {
+	return &Handler{r: r}
 }
 
-func (h *shortHandler) RedirectURL(w http.ResponseWriter, r *http.Request) {
-	ctx := pirca.Ctx(r)
-
-	val, _ := ctx.Get("logentry")
-	le := val.(*middleware.LogEntry)
-
-	shortCode := ctx.Param("code")
+func (h *Handler) RedirectURL(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	shortCode := chi.URLParam(r, "code")
 
 	cacheMu.RLock()
 	if cachedURL, ok := cache[shortCode]; ok {
 		cacheMu.RUnlock()
-		le.CacheHit = true
-		ctx.Redirect(http.StatusFound, cachedURL)
+		http.Redirect(w, r, cachedURL, http.StatusFound)
 		return
 	}
 	cacheMu.RUnlock()
 
-	originalURL, err := h.s.GetURL(ctx, shortCode)
+	originalURL, err := h.r.GetURL(ctx, shortCode)
 	if err != nil {
-		le.Error = fmt.Sprintf("failed to get URL from database: %v", err)
-		if errors.Is(err, storage.ErrShortURLNotFound) {
+		slog.Error("failed to get URL from database", "err", err)
+		if errors.Is(err, ErrShortURLNotFound) {
 			http.NotFound(w, r)
 			return
 		}
-		ctx.String(http.StatusInternalServerError, "500 internal error")
+		w.Write([]byte("500 internal error"))
 		return
 	}
 	cacheMu.Lock()
 	cache[shortCode] = originalURL
 	cacheMu.Unlock()
 
-	ctx.Redirect(http.StatusFound, originalURL)
+	http.Redirect(w, r, originalURL, http.StatusFound)
 }

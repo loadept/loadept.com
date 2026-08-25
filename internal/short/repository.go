@@ -1,23 +1,17 @@
-package storage
+package short
 
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"zombiezen.com/go/sqlite/sqlitex"
 )
 
-type ShortURLStorage struct {
-	db *sqlitex.Pool
+type Repo struct {
+	pool *sqlitex.Pool
 }
 
-func NewShortURLStorage(db *sqlitex.Pool) (*ShortURLStorage, error) {
-	if db == nil {
-		return nil, fmt.Errorf("db pool is nil")
-	}
-	return &ShortURLStorage{db: db}, nil
-}
+func NewRepo(pool *sqlitex.Pool) *Repo { return &Repo{pool: pool} }
 
 var ErrShortURLNotFound = errors.New("short url does not exist or invalid short code")
 
@@ -26,18 +20,18 @@ const (
 	URLStatusDeleted = "deleted"
 )
 
-func (s *ShortURLStorage) GetURL(ctx context.Context, shortCode string) (string, error) {
-	conn, err := s.db.Take(ctx)
+func (r *Repo) GetURL(ctx context.Context, shortCode string) (string, error) {
+	conn, err := r.pool.Take(ctx)
 	if err != nil {
 		return "", err
 	}
-	defer s.db.Put(conn)
+	defer r.pool.Put(conn)
 
 	stmt, err := conn.Prepare(`
 		SELECT original_url
 		FROM short_urls
 		WHERE short_code = $1
-		AND status = $2
+			AND status = $2
 	`)
 	if err != nil {
 		return "", err

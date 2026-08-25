@@ -2,47 +2,36 @@ package main
 
 import (
 	"context"
-	"embed"
 	"errors"
-	"io/fs"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
-	"path"
-	"strings"
 	"syscall"
 	"time"
 
-	"github.com/loadept/pirca"
+	"github.com/go-chi/chi/v5"
 	"github.com/loadept/website/internal/middleware"
 	"github.com/loadept/website/internal/short"
-	"github.com/loadept/website/internal/storage"
+	"github.com/loadept/website/ui"
 	"zombiezen.com/go/sqlite"
 	"zombiezen.com/go/sqlite/sqlitex"
 )
 
-//go:embed all:web/static
-var staticFiles embed.FS
-
 func main() {
-	log.SetFlags(0)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	slog.SetDefault(logger)
 
 	db := os.Getenv("DB_PATH")
+	addr := os.Getenv("ADDR")
 	if db == "" {
 		log.Fatalf("env var DB_PATH is required")
 	}
-	addr := os.Getenv("ADDR")
 	if addr == "" {
 		log.Fatalf("env var ADDR is required")
-	}
-	webhookSecret := os.Getenv("WEBHOOK_SECRET")
-	if webhookSecret == "" {
-		log.Fatalf("env var WEBHOOK_SECRET is required")
-	}
-	webhook := os.Getenv("WEBHOOK")
-	if webhook == "" {
-		log.Fatalf("env var WEBHOOK is required")
 	}
 
 	pool, err := sqlitex.NewPool(db, sqlitex.PoolOptions{
@@ -58,26 +47,18 @@ func main() {
 	fatalIfErr(err)
 	defer pool.Close()
 
-	mux := http.NewServeMux()
-	visit := middleware.NewVisitsMiddleware(
-		&http.Client{Timeout: 10 * time.Second},
-		webhookSecret,
-		webhook,
-	)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 
-	s, err := storage.NewShortURLStorage(pool)
-	fatalIfErr(err)
+	shortHandler := short.NewHandler(short.NewRepo(pool))
 
-	shortHandler := short.NewShortHandler(s)
-	subFS, err := fs.Sub(staticFiles, "web/static")
-	fatalIfErr(err)
-
-	mux.Handle("GET /", http.FileServerFS(&neuteredFS{fs: subFS}))
-	mux.Handle("GET /s/{code}", visit(http.HandlerFunc(shortHandler.RedirectURL)))
+	fileServ := http.FileServerFS(ui.FS)
+	r.Get("/s/{code}", shortHandler.RedirectURL)
+	r.Get("/*", func(w http.ResponseWriter, r *http.Request) { fileServ.ServeHTTP(w, r) })
 
 	server := http.Server{
 		Addr:         addr,
-		Handler:      pirca.New()(middleware.Logger(mux)),
+		Handler:      r,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
@@ -104,33 +85,4 @@ func fatalIfErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-// FileServer Wrapper
-type neuteredFS struct{ fs fs.FS }
-
-func (n *neuteredFS) Open(name string) (fs.File, error) {
-	name = strings.TrimPrefix(name, "/")
-	if name == "" {
-		name = "."
-	}
-
-	f, err := n.fs.Open(name)
-	if err != nil {
-		return nil, err
-	}
-
-	stat, err := f.Stat()
-	if err != nil {
-		return nil, errors.Join(err, f.Close())
-	}
-
-	if stat.IsDir() {
-		_, err := fs.Stat(n.fs, path.Join(name, "index.html"))
-		if err != nil {
-			return nil, errors.Join(fs.ErrNotExist, f.Close())
-		}
-	}
-
-	return f, nil
 }

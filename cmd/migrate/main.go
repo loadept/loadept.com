@@ -20,13 +20,16 @@ CREATE TABLE IF NOT EXISTS short_urls (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TEXT
 ) STRICT;
+ 
 CREATE INDEX IF NOT EXISTS idx_original_url ON short_urls(original_url);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_name_active
-ON short_urls(name) WHERE status = 'active';
+ON short_urls(name)
+WHERE status = 'active';
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_short_urls_short_code_active
-ON short_urls(short_code) WHERE status = 'active';
+ON short_urls(short_code)
+WHERE status = 'active';
 `
 
 func main() {
